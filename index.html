@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For My Lovely Doctor 💖</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html { overflow-x: hidden; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #ffebee, #e0f7fa);
+      overflow-y: auto;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+      color: #333;
+      padding-bottom: 60px;
+    }
+
+    /* MARQUEE NAV BAR WITH GLASS EFFECT */
+    .marquee-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.18);     /* Very transparent */
+      backdrop-filter: blur(20px);               /* Strong glass effect */
+      -webkit-backdrop-filter: blur(20px);
+      color: #e91e63;
+      z-index: 200;
+      padding: 12px 0;
+      box-shadow: 0 4px 20px rgba(233, 30, 99, 0.35);
+      display: none;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255, 64, 129, 0.3);
+    }
+
+    .marquee-content {
+      display: inline-block;
+      padding-left: 100%;
+      white-space: nowrap;
+      font-size: 22px;
+      font-weight: 600;
+      animation: marquee 28s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .marquee-container:hover .marquee-content {
+      animation-play-state: paused;
+    }
+
+    .section {
+      position: relative;
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 200px 20px 40px 20px;
+      text-align: center;
+      min-height: 100vh;
+    }
+
+    .active { display: flex !important; }
+
+    /* Back Button */
+    .back-btn {
+      position: fixed;
+      top: 78px;
+      left: 30px;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.95);
+      color: #e91e63;
+      border: 2px solid #ff4081;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 18px;
+      z-index: 210;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover {
+      background: #ff4081;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    /* First Section */
+    #birthday-section {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      flex-direction: row;
+      gap: 80px;
+      padding: 40px;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .left-side {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .birthday-title {
+      font-family: 'Brush Script MT', cursive;
+      font-size: 68px;
+      color: #e91e63;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    #happy-text-2 {
+      font-family: 'Lucida Calligraphy', 'Segoe Script', 'Segoe Print', cursive;
+      font-size: 62px;
+      line-height: 1.05;
+      margin-top: 10px;
+      letter-spacing: 0.6px;
+      font-weight: 600;
+      text-align: center;
+      display: inline-block;
+      background: linear-gradient(135deg, #d81b60 0%, #ff4081 50%, #ffbbca 100%);
+      -webkit-background-clip: text;
+      text-shadow: 0 4px 14px rgba(168, 24, 96, 0.16);
+    }
+
+    .letter {
+      display: inline-block;
+      opacity: 0;
+      transform: scale(0.3) translateY(50px);
+      transition: all 0.75s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+
+    .letter.pop { 
+      opacity: 1; 
+      transform: scale(1) translateY(0); 
+    }
+
+    .subtitle {
+      font-size: 44px;
+      color: #ff4081;
+      margin-bottom: 25px;
+      opacity: 0;
+      transform: translateX(-150px);
+      transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .subtitle.slide-in {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .date-banner {
+      background: #ff69b4;
+      color: white;
+      padding: 10px 35px;
+      border-radius: 50px;
+      font-size: 22px;
+      margin-top: 15px;
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 1.2s ease-out;
+      box-shadow: 0 8px 20px rgba(255, 105, 180, 0.3);
+    }
+
+    .date-banner.slide-up {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #presents-btn {
+      display: inline-block;
+      padding: 16px 45px;
+      font-size: 22px;
+      background: #ff4081;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(255,64,129,0.4);
+      margin-top: 35px;
+      opacity: 0;
+      transform: translateY(50px);
+      visibility: hidden;
+      transition: all 1.2s ease-out;
+    }
+
+    #presents-btn.show {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+    }
+
+    /* Exploding Gifts */
+    .gifts {
+      display: flex;
+      gap: 80px;
+      margin: 40px 0;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 100%;
+      flex-direction: row;
+    }
+
+    .gift {
+      width: 140px;
+      height: 140px;
+      cursor: pointer;
+      transition: transform 0.1s;
+      position: relative;
+      border-radius: 30px;
+      background: transparent url('gift.png') center center / contain no-repeat;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);   /* Smooth */
+    }
+
+    .gift.opened {
+      opacity: 0.65;
+      pointer-events: none;
+      transform: scale(0.95);
+    }
+
+    .gift:hover {
+      transform: scale(1.2) rotate(5deg);   /* Gentle hover */
+      animation: explode 0.8s ease forwards;
+    }
+
+    @keyframes explode {
+      0%   { transform: scale(1) rotate(0deg); }
+      25%  { transform: scale(1.45) rotate(-18deg); }
+      50%  { transform: scale(1.75) rotate(15deg); }
+      75%  { transform: scale(1.55) rotate(-10deg); }
+      100% { transform: scale(1.65) rotate(0deg); }
+    }
+
+    .bear-circle {
+      width: 260px;
+      height: 260px;
+      background: white;
+      border-radius: 50%;
+      border: 14px solid #ff69b4;
+      position: relative;
+      box-shadow: 0 15px 40px rgba(255, 105, 180, 0.3);
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(80px);
+      transition: all 1.2s ease-out;
+    }
+
+    .bear-circle.slide-up {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .bear-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 15px;
+    }
+
+    .notebook {
+      padding: 40px 38px;
+      max-width: 100%;
+      background:
+        linear-gradient(135deg, rgba(255,247,249,0.25), rgba(255,239,246,0.28)),
+        url('proposal.jpg') center/cover no-repeat;
+      border-radius: 28px;
+      border: 1px solid rgba(255,105,180,0.18);
+      box-shadow: 0 24px 60px rgba(255, 141, 173, 0.14);
+      color: #58344d;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 20px;
+      line-height: 1.85;
+      letter-spacing: 0.3px;
+      text-align: left;
+    }
+
+    /* Remove the left ruler and stickers */
+    .notebook::before,
+    .notebook::after {
+      display: none;
+    }
+    #heart-section { justify-content: center; padding-top: 180; align-items: center; }
+
+    .heart-wrapper {
+      width: 100%;
+      max-width: 920px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 20px;
+      min-height: calc(100vh - 180px);
+      box-sizing: border-box;
+    }
+
+    .heart-overlay {
+      position: relative;
+      width: 100%;
+      max-width: 640px;
+      min-height: 360px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: filter 0.7s ease;
+      padding: 18px;
+      border-radius: 30px;
+    }
+
+    .heart-wrapper.opened .heart-overlay {
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    /* ── Advanced Romantic Envelope ── */
+    .envelope {
+      width: 480px;
+      height: 300px;
+      border-radius: 18px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.85s cubic-bezier(0.34, 1.2, 0.64, 1),
+                  opacity 0.7s ease,
+                  filter 0.7s ease;
+      filter: drop-shadow(0 22px 40px rgba(216, 27, 96, 0.22));
+      transform-style: preserve-3d;
+    }
+
+    .envelope:hover {
+      transform: translateY(-6px) scale(1.02);
+      filter: drop-shadow(0 28px 50px rgba(216, 27, 96, 0.3));
+    }
+
+    /* Soft paper body */
+    .envelope-body {
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fff8fb 0%, #ffe9f1 45%, #ffd6e6 100%);
+      border: 1.5px solid rgba(255, 182, 205, 0.55);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        inset 0 -8px 20px rgba(255, 105, 180, 0.06);
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .envelope-body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 27px,
+          rgba(255, 182, 205, 0.07) 27px,
+          rgba(255, 182, 205, 0.07) 28px
+        );
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* Triangular flap */
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 155px;
+      background: linear-gradient(160deg, #ffb6c9 0%, #ff9eb8 40%, #ff8aad 100%);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center;
+      transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 3;
+      box-shadow: 0 4px 18px rgba(233, 30, 99, 0.18);
+    }
+
+    .envelope-flap::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.45) 0%,
+        rgba(255, 255, 255, 0.08) 45%,
+        transparent 70%
+      );
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      pointer-events: none;
+    }
+
+    .envelope.opened .envelope-flap {
+      transform: rotateX(178deg);
+    }
+
+    /* Wax-style seal */
+    .envelope-seal {
+      position: absolute;
+      top: 118px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #f06292, #c2185b 70%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      z-index: 5;
+      box-shadow:
+        0 6px 0 #9c1250,
+        0 10px 22px rgba(194, 24, 91, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.35);
+      transition: transform 0.4s ease, opacity 0.5s ease, box-shadow 0.4s ease;
+      animation: sealPulse 2.8s ease-in-out infinite;
+    }
+
+    .envelope-seal::before {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(255, 255, 255, 0.35);
+      pointer-events: none;
+    }
+
+    .envelope:hover .envelope-seal {
+      transform: translateX(-50%) scale(1.08);
+    }
+
+    @keyframes sealPulse {
+      0%, 100% { box-shadow: 0 6px 0 #9c1250, 0 10px 22px rgba(194, 24, 91, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.35); }
+      50% { box-shadow: 0 6px 0 #9c1250, 0 14px 30px rgba(194, 24, 91, 0.55), inset 0 2px 4px rgba(255, 255, 255, 0.45); }
+    }
+
+    /* Label text INSIDE the body, below the seal */
+    .envelope-label {
+      position: absolute;
+      bottom: 26px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #9c1f58;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      z-index: 4;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+      transition: opacity 0.45s ease;
+      padding: 0 20px;
+      line-height: 1.4;
+    }
+
+    .envelope.opened .envelope-label,
+    .envelope.opened .envelope-seal {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .envelope.opened {
+      opacity: 0.15;
+      transform: translateY(-36px) scale(1.04);
+      filter: blur(4px);
+      pointer-events: none;
+    }
+
+    .envelope-seal::after {
+      content: '♡';
+      position: absolute;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      top: -14px;
+      right: -6px;
+      animation: heartFloat 2.2s ease-in-out infinite;
+    }
+
+    @keyframes heartFloat {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+      50% { transform: translateY(-6px) scale(1.15); opacity: 1; }
+    }
+
+    .message-card {
+      width: 100%;
+      max-width: 820px;
+      opacity: 0;
+      background:
+        linear-gradient(135deg, rgba(255,247,249,0.25), rgba(255,239,246,0.28)),
+        url('proposal.jpg') center/cover no-repeat;
+      background-size: cover;
+      background-position: center;
+      background-attachment: local;
+      transform: translateY(24px) scale(0.98);
+      transition: opacity 0.9s cubic-bezier(0.2,0.9,0.2,1), transform 0.9s cubic-bezier(0.2,0.9,0.2,1);
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      padding: 0;
+      border-radius: 24px;
+    }
+
+    .message-card.revealed {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .message-card .notebook {
+      box-shadow: 0 24px 60px rgba(255, 141, 173, 0.14);
+      border: 1px solid rgba(255,105,180,0.18);
+      padding: 40px 38px;
+    }
+
+    .restart-card {
+      max-width: 820px;
+      padding: 50px 45px;
+      background:
+        linear-gradient(135deg, rgba(255,247,249,0.25), rgba(255,239,246,0.28)),
+        url('proposal.jpg') center/cover no-repeat;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 22px 48px rgba(216,27,96,0.14);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 28px;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .restart-options {
+      animation: fadeUp 0.9s ease 0.2s both;
+    }
+
+    /* FIXED FOOTER WITH GLASS EFFECT */
+    .footer-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      color: #e91e63;
+      z-index: 200;
+      padding: 12px 20px;
+      box-shadow: 0 -4px 20px rgba(233, 30, 99, 0.35);
+      border-top: 1px solid rgba(255, 64, 129, 0.3);
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-container.hidden {
+      display: none;
+    }
+
+    #continue-after-envelope {
+      display: none;
+      margin-top: 24px;
+      padding: 12px 34px;
+    }
+
+    .heart-wrapper.opened #continue-after-envelope {
+      display: inline-block;
+    }
+
+    #heart-section .notebook {
+      padding: 40px 38px;
+      max-width: 100%;
+      background: linear-gradient(180deg, #fff7f9 0%, #ffeff6 100%);
+      border-radius: 28px;
+      border: 1px solid rgba(255,105,180,0.18);
+      box-shadow: 0 24px 60px rgba(255, 141, 173, 0.14);
+      background-image: none;
+      color: #58344d;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 20px;
+      line-height: 1.85;
+      letter-spacing: 0.3px;
+      text-align: left;
+    }
+
+    #result-message .notebook {
+      background: linear-gradient(180deg, #fff7f9 0%, #ffeff6 100%) !important;
+      background-image: none !important;
+    }
+
+    .custom-alert {
+      position: fixed;
+      top: 50%; left: 50%;
+      font-family: 'Patrick Hand', cursive;
+      transform: translate(-50%, -50%) scale(0.7);
+      background: linear-gradient(145deg, #fff0f5, #ffe4e1);
+      border: 3px solid #ff4081;
+      border-radius: 20px;
+      padding: 24px 28px;
+      width: min(92vw, 380px);
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(255, 64, 129, 0.45);
+      z-index: 10000;
+      opacity: 0;
+      transition: all 0.4s;
+    }
+
+    .custom-alert.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+
+    .custom-alert button {
+      padding: 10px 28px;
+      font-size: 16px;
+      margin: 12px 8px;
+    }
+
+    .custom-alert p {
+      font-family: 'Patrick Hand', cursive;
+      font-size: 18px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    button {
+      padding: 16px 45px;
+      font-size: 22px;
+      background: #ff4081;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(255,64,129,0.4);
+      margin: 15px;
+    }
+
+    button:hover { transform: scale(1.1); }
+
+    .restart-options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding-bottom: 70px;
+      }
+
+      .marquee-container { 
+        padding: 10px 0; 
+      }
+      .marquee-content { 
+        font-size: 16px; 
+      }
+      
+      .footer-container {
+        padding: 10px 16px;
+        font-size: 13px;
+      }
+      
+      #footer-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .back-btn {
+        top: 68px;
+        left: 12px;
+        padding: 8px 14px;
+        font-size: 14px;
+      }
+      .section { 
+        padding-top: 120px;
+        padding-left: 12px;
+        padding-right: 12px;
+        min-height: auto;
+      }
+      
+      /* Birthday Section */
+      #birthday-section {
+        gap: 20px;
+        flex-direction: column;
+        padding: 20px;
+      }
+      
+      .birthday-title {
+        font-size: 38px;
+      }
+      
+      #happy-text-2 {
+        font-size: 32px;
+      }
+      
+      .subtitle {
+        font-size: 28px;
+      }
+      
+      .date-banner {
+        font-size: 16px;
+        padding: 8px 20px;
+      }
+      
+      #presents-btn {
+        padding: 12px 28px;
+        font-size: 16px;
+        margin-top: 20px;
+      }
+      
+      .bear-circle {
+        width: 180px;
+        height: 180px;
+        border-width: 10px;
+      }
+      
+      /* Gifts Section */
+      .gifts {
+        gap: 30px;
+        margin: 25px 0;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .gift {
+        width: 180px;
+        height: 180px;
+      }
+      
+      #gifts-section h1 {
+        font-size: 22px;
+        margin: 15px 0;
+      }
+      
+      #gifts-section p {
+        font-size: 18px;
+      }
+      
+      #continue-after-gifts {
+        padding: 10px 24px;
+        font-size: 15px;
+        margin-top: 20px;
+      }
+      
+      /* Heart/Envelope Section */
+      .heart-wrapper {
+        gap: 16px;
+        padding: 12px;
+        min-height: auto;
+      }
+      
+      .envelope {
+        width: 90vw;
+        max-width: 320px;
+        height: 200px;
+      }
+      
+      .envelope-flap {
+        height: 100px;
+      }
+      
+      .envelope-seal {
+        width: 56px;
+        height: 56px;
+        font-size: 22px;
+        top: 85px;
+      }
+      
+      .envelope-label {
+        font-size: 11px;
+        bottom: 18px;
+        letter-spacing: 0.8px;
+      }
+      
+      .message-card {
+        padding: 12px;
+        border-radius: 16px;
+      }
+      
+      .message-card .notebook {
+        padding: 20px 16px;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      
+      #continue-after-envelope {
+        padding: 10px 24px;
+        font-size: 15px;
+      }
+      
+      #heart-section h1 {
+        font-size: 22px;
+      }
+      
+      /* Restart Section */
+      .restart-card {
+        padding: 28px 20px;
+        border-radius: 16px;
+      }
+      
+      .restart-card p {
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      
+      .restart-options {
+        gap: 12px;
+        margin-top: 20px;
+      }
+      
+      #yes-btn, #no-btn {
+        padding: 12px 24px;
+        font-size: 16px;
+        margin: 8px 6px;
+      }
+      
+      #restart-section h1 {
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+      
+      #result-message .notebook {
+        background-image: none;
+        padding: 24px 18px;
+        font-size: 16px;
+      }
+      
+      #restart-btn {
+        padding: 12px 24px;
+        font-size: 16px;
+        margin-top: 16px;
+      }
+      
+      /* Custom Alert */
+      .custom-alert {
+        border-radius: 16px;
+        padding: 20px 20px;
+        width: min(90vw, 320px);
+      }
+      
+      .custom-alert p {
+        font-size: 16px;
+        line-height: 1.4;
+      }
+      
+      .custom-alert button {
+        padding: 9px 20px;
+        font-size: 14px;
+        margin: 10px 6px;
+      }
+      
+      /* General Buttons */
+      button {
+        padding: 12px 28px;
+        font-size: 16px;
+        margin: 10px;
+      }
+    }
+
+    /* Extra Small Devices */
+    @media (max-width: 480px) {
+      body {
+        padding-bottom: 75px;
+      }
+
+      .marquee-container { padding: 8px 0; }
+      .marquee-content { font-size: 13px; }
+      
+      .footer-container {
+        padding: 9px 12px;
+        font-size: 12px;
+      }
+      
+      #footer-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .back-btn {
+        top: 60px;
+        left: 8px;
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+      
+      .section { 
+        padding-top: 100px;
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+      
+      /* Birthday Section */
+      #birthday-section {
+        gap: 15px;
+      }
+      
+      .birthday-title {
+        font-size: 48px;
+        gap: 4px;
+      }
+      
+      #happy-text-2 {
+        font-size: 28px;
+      }
+      
+      .date-banner {
+        font-size: 14px;
+        padding: 6px 16px;
+      }
+      
+      #presents-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+      }
+      
+      .bear-circle {
+        width: 180px;
+        height: 180px;
+        border-width: 8px;
+      }
+      
+      /* Gifts */
+      .gifts {
+        gap: 15px;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .gift {
+        width: 180px;
+        height: 180px;
+      }
+      
+      #gifts-section h1 {
+        font-size: 18px;
+      }
+      
+      #gifts-section p {
+        font-size: 16px;
+      }
+      
+      /* Envelope */
+      .envelope {
+        width: 92vw;
+        max-width: 280px;
+        height: 180px;
+      }
+      
+      .envelope-seal {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+        top: 75px;
+      }
+      
+      .envelope-label {
+        font-size: 10px;
+      }
+      
+      .message-card {
+        padding: 10px;
+      }
+      
+      .message-card .notebook {
+        padding: 16px 12px;
+        font-size: 14px;
+      }
+      
+      #heart-section h1 {
+        font-size: 18px;
+      }
+      
+      /* Restart */
+      .restart-card {
+        padding: 20px 16px;
+      }
+      
+      .restart-card p {
+        font-size: 14px;
+      }
+      
+      .restart-options {
+        gap: 8px;
+        margin-top: 16px;
+      }
+      
+      #yes-btn, #no-btn {
+        padding: 10px 18px;
+        font-size: 14px;
+        margin: 6px 4px;
+      }
+      
+      #restart-section h1 {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+      
+      /* Buttons */
+      button {
+        padding: 10px 20px;
+        font-size: 14px;
+        margin: 8px;
+      }
+      
+      button:hover { 
+        transform: scale(1.05); 
+      }
+      
+      /* Custom Alert */
+      .custom-alert {
+        border-radius: 14px;
+        padding: 16px 16px;
+        width: min(88vw, 280px);
+      }
+      
+      .custom-alert p {
+        font-size: 14px;
+        line-height: 1.3;
+        margin-bottom: 12px;
+      }
+      
+      .custom-alert button {
+        padding: 8px 16px;
+        font-size: 13px;
+        margin: 8px 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MARQUEE NAV BAR -->
+  <div class="marquee-container" id="marquee-nav">
+    <div class="marquee-content">
+      💖 Happy Birthday <strong>Dr.Yashaswi Ramineni</strong> 💖 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </div>
+  </div>
+
+  <!-- Back Button -->
+  <button class="back-btn" id="global-back-btn" onclick="goBack()" style="display: none;">← Back</button>
+
+  <!-- FIXED FOOTER -->
+  <div class="footer-container hidden" id="footer-container">
+    <div id="footer-text">Crafted Carefully with ❤️ by <b>Rupesh.</b></div>
+  </div>
+
+  <!-- 1. HAPPY BIRTHDAY -->
+  <div id="birthday-section" class="section active">
+    <div class="left-side">
+      <div class="birthday-title" id="happy-text"></div>
+      <div class="birthday-title" id="happy-text-2"></div><br><br>
+      <div class="date-banner" id="date-banner"> 👩‍⚕️ Born on 21 September, 2004</div>
+      <button id="presents-btn" onclick="nextSection('gifts-section')">Open Your Presents 🎁</button>
+    </div>
+    <div class="bear-circle">
+      <img src="teddybear.jpg" alt="Teddy Bear">
+    </div>
+  </div>
+
+  <!-- 2. GIFTS SECTION -->
+  <div id="gifts-section" class="section">
+    <h1 style="color:#e91e63;">Click to open your presents from my Heart ❤️!</h1>
+    <p style="font-size:24px; margin:20px 0;">Hope you like them hehe 😊</p>
+    <div class="gifts">
+      <div class="gift" data-index="1" onclick="openGift(1)" data-message="The best decision my heart ever made was trusting how a Love and Friendship would be when it chose you. ❤️"></div>
+      <div class="gift" data-index="2" onclick="openGift(2)" data-message="Loving you silently without knowing you has been the quiet answer to questions I never knew I was asking. 💕"></div>
+      <div class="gift" data-index="3" onclick="openGift(3)" data-message="When I think about the future, I don't see places or plans. I see you. 🥰"></div>
+    </div>
+    <button id="continue-after-gifts" style="display:none;" onclick="nextSection('heart-section')">Continue to My Message 💌</button>
+  </div>
+
+  <!-- 3. WORDS FROM HEART -->
+  <div id="heart-section" class="section">
+    <h1>Words from my Heart 💌</h1>
+    <div class="heart-wrapper">
+      <div class="heart-overlay" id="heart-overlay">
+        <div class="envelope" id="envelope" onclick="openEnvelope()">
+          <div class="envelope-body"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-seal">💌</div>
+          <div class="envelope-label">PLEASE OPEN THIS ENVELOPE</div>
+        </div>
+      </div>
+      <div class="message-card" id="message-card">
+        <div class="notebook">
+          Dear <b>Dr.Yashaswi Ramineni</b>,<br><br>
+          Happy Birthday to someone truly special! 🎂<br><br>
+          Ever since we met, You are Sweet, Cared and most Loved Person of my Life and I'm so grateful to have you in my life.<br><br>
+          You bring so much warmth and sweetness into my life. Every moment with you is So Precious.<br><br>
+          On your special day, I wish you all the happiness, love, and joy that you deserve. May this year bring you countless beautiful moments and wonderful memories.<br><br>
+          With Love and Best Wishes,<br>
+          <b>Rupesh</b><br><br>
+          <strong style="color:#e91e63;">Always and Forever ❤️</strong>
+        </div>
+      </div>
+      <button id="continue-after-envelope" style="display:none;" onclick="nextSection('restart-section')">Continue the Journey 💘</button>
+    </div>
+  </div>
+
+  <!-- 4. RESTART JOURNEY -->
+  <div id="restart-section" class="section">
+    <h1 style="color:#e91e63; margin-bottom: 30px;">I know I've Hurted you, but Please Allow Me to Tell this.. 💘</h1>
+    <div class="notebook restart-card" style="max-width: 820px; padding: 50px 45px;">
+      <p style="text-align: left; line-height: 1.85;">
+        Let me tell you, How in a Sky crowded with billions of stars ✨, you are the only Moon 🌝 I See. <br><br>
+        I know Things have gone in a different direction. I'm not taking this situation as an Advantage but it's been in my heart to ask you. <br><br>
+        <b>Its been almost 3 months since we talked. Lets Restart Together from Start Amma, Accept Chestene kadha Telustudi, True Intensions Yento ani. ❤️</b><br><br>
+        I asked god about a girl like you a Million times and he made me to meet you in the Train. The Moment I saw you, it was like this Saying, <b>Meeting you was a Destiny and a Wish I never Asked For..</b> <br><br>
+        I never craved for any other girl like I'm craving for you right now..! Inka nenu na Decision midane vunta, I'll Keep you Ghosted ante Choice is yours. I can ask for a chance but I can't force you to do anything.
+      </p>
+      <p style="font-size:22px; color:#e91e63; margin-top: 25px; text-align: center;">
+        <b>Will you Accept this Proposal? 💖</b>
+      </p>
+    </div>
+    <div class="restart-options" style="margin-top: 30px;">
+      <button id="yes-btn">Yes 😊</button>
+      <button id="no-btn">No😢</button>
+    </div>
+    <div id="result-message" style="display:none; margin-top: 30px;">
+      <div class="notebook" style="max-width: 820px; padding: 40px 45px;">
+        <p id="result-text" style="font-size:20px; line-height:1.8; color:#4b3329;"></p>
+      </div>
+      <button id="restart-btn" style="display:none; margin-top: 20px;" onclick="restartAll()">Click to Restart this Application 💖</button>
+    </div>
+  </div>
+
+  <script>
+    let historyStack = [];
+
+    function nextSection(id) {
+      const current = document.querySelector('.section.active');
+      if (current) historyStack.push(current.id);
+      
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      const newSection = document.getElementById(id);
+      newSection.classList.add('active');
+      
+      if (id === 'heart-section') prepareHeartSection();
+      
+      // Control marquee and back button visibility
+      const marquee = document.getElementById('marquee-nav');
+      const footer = document.getElementById('footer-container');
+      const shouldShowFooter = ['birthday-section', 'gifts-section', 'heart-section', 'restart-section'].includes(id);
+      
+      marquee.style.display = shouldShowFooter ? 'block' : 'none';
+      if (shouldShowFooter) {
+        footer.classList.remove('hidden');
+      } else {
+        footer.classList.add('hidden');
+      }
+      
+      updateBackButton();
+      
+      setTimeout(() => {
+        newSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    function goBack() {
+      if (historyStack.length === 0) return;
+      
+      const previousId = historyStack.pop();
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      const previousSection = document.getElementById(previousId);
+      previousSection.classList.add('active');
+      
+      if (previousId === 'heart-section') prepareHeartSection();
+      
+      const marquee = document.getElementById('marquee-nav');
+      const footer = document.getElementById('footer-container');
+      const shouldShowFooter = ['birthday-section', 'gifts-section', 'heart-section', 'restart-section'].includes(previousId);
+      
+      marquee.style.display = shouldShowFooter ? 'block' : 'none';
+      if (shouldShowFooter) {
+        footer.classList.remove('hidden');
+      } else {
+        footer.classList.add('hidden');
+      }
+      
+      updateBackButton();
+      
+      setTimeout(() => {
+        previousSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    function updateBackButton() {
+      const backBtn = document.getElementById('global-back-btn');
+      backBtn.style.display = historyStack.length > 0 ? 'block' : 'none';
+    }
+
+    function prepareHeartSection() {
+      const wrapper = document.querySelector('#heart-section .heart-wrapper');
+      const envelope = document.getElementById('envelope');
+      const messageCard = document.getElementById('message-card');
+      const continueBtn = document.getElementById('continue-after-envelope');
+      const resultBox = document.getElementById('result-message');
+      const restartBtn = document.getElementById('restart-btn');
+      if (wrapper) wrapper.classList.remove('opened');
+      if (envelope) envelope.classList.remove('opened');
+      if (messageCard) messageCard.classList.remove('revealed');
+      if (continueBtn) continueBtn.style.display = 'none';
+      if (resultBox) resultBox.style.display = 'none';
+      if (restartBtn) restartBtn.style.display = 'none';
+    }
+
+    function openEnvelope() {
+      const wrapper = document.querySelector('#heart-section .heart-wrapper');
+      const envelope = document.getElementById('envelope');
+      const messageCard = document.getElementById('message-card');
+      const continueBtn = document.getElementById('continue-after-envelope');
+      if (!wrapper || !envelope || !messageCard) return;
+      envelope.classList.add('opened');
+      setTimeout(() => {
+        messageCard.classList.add('revealed');
+        wrapper.classList.add('opened');
+        if (continueBtn) continueBtn.style.display = 'inline-block';
+      }, 520);
+    }
+
+    function animateText(id, text, delayStart) {
+      const container = document.getElementById(id);
+      if (!container) return 0;
+      container.innerHTML = '';
+      text.split('').forEach((char, i) => {
+        const span = document.createElement('span');
+        span.className = 'letter';
+        span.textContent = char === ' ' ? '\u00A0' : char;
+        container.appendChild(span);
+        setTimeout(() => span.classList.add('pop'), delayStart + 100 + i * 105);
+      });
+      return delayStart + 100 + (text.length - 1) * 105 + 400;
+    }
+
+    function animateBirthday() {
+      const firstEnd = animateText('happy-text', 'Happy Birthday', 0);
+      const secondEnd = animateText('happy-text-2', 'Dr.Yashaswi Ramineni', firstEnd);
+      setTimeout(() => document.getElementById('subtitle').classList.add('slide-in'), secondEnd + 200);
+      setTimeout(() => document.getElementById('date-banner').classList.add('slide-up'), secondEnd + 600);
+      setTimeout(() => document.querySelector('.bear-circle').classList.add('slide-up'), secondEnd + 600);
+      setTimeout(() => document.getElementById('presents-btn').classList.add('show'), secondEnd + 1600);
+    }
+
+    let openedGifts = 0;
+    const openedGiftIds = {};
+
+    function createFlowerRain(index) {
+      const flowers = ['🌸','🌺','🌷','🌹','💐','🍃'];
+      const startY = window.innerHeight - 12;
+      const leftX = 24;
+      const rightX = window.innerWidth - 14;
+      const centerX = window.innerWidth / 2;
+
+      for (let i = 0; i < 100; i++) {
+        const fromLeft = i % 2 === 0;
+        const flower = document.createElement('div');
+        flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+        flower.style.position = 'absolute';
+        flower.style.left = `${fromLeft ? leftX + Math.random() * 28 : rightX - Math.random() * 28}px`;
+        flower.style.top = `${startY + Math.random() * 8}px`;
+        flower.style.fontSize = Math.random() * 20 + 18 + 'px';
+        flower.style.zIndex = '5';
+        flower.style.opacity = Math.random() * 0.2 + 0.75;
+        flower.style.transition = `all ${4.5 + Math.random() * 2.5}s cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+        document.body.appendChild(flower);
+
+        setTimeout(() => {
+          const endX = fromLeft ? centerX - (Math.random() * 50 + 10) : centerX + (Math.random() * 50 + 10);
+          flower.style.top = `${startY - (320 + Math.random() * 220)}px`;
+          flower.style.left = `${endX}px`;
+          flower.style.transform = `rotate(${Math.random() * 720 - 360}deg)`;
+          flower.style.opacity = '0';
+        }, 100);
+        setTimeout(() => flower.remove(), 7600);
+      }
+    }
+
+    function createFloatingElements() {
+      const emojis = ['💖','🦋','🎈','🌸','🌺'];
+      for (let i = 0; i < 22; i++) {
+        const el = document.createElement('div');
+        el.style.position = 'fixed';
+        el.style.fontSize = (26 + Math.random()*28) + 'px';
+        el.style.left = Math.random() * 92 + 'vw';
+        el.style.top = '100vh';
+        el.style.opacity = '0.85';
+        el.style.pointerEvents = 'none';
+        el.style.zIndex = '5';
+        el.style.animation = `float ${15 + Math.random()*20}s linear infinite`;
+        el.style.animationDelay = `-${Math.random()*25}s`;
+        el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        document.body.appendChild(el);
+      }
+      const style = document.createElement('style');
+      style.innerHTML = `@keyframes float { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(-1200px) rotate(720deg); } }`;
+      document.head.appendChild(style);
+    }
+
+    function openGift(n) {
+      if (openedGiftIds[n]) return;
+      openedGiftIds[n] = true;
+      openedGifts++;
+      const gift = document.querySelector(`.gift[data-index="${n}"]`);
+      if (gift) gift.classList.add('opened');
+      const message = gift?.dataset?.message || "You are the best part of my life ❤️";
+      createFlowerRain(n);
+      showCustomAlert(message, 'Click for Another Present');
+
+      if (openedGifts >= document.querySelectorAll('.gift').length) {
+        document.getElementById('continue-after-gifts').style.display = 'block';
+      }
+    }
+
+    function showCustomAlert(message, buttonText = 'OK') {
+      const alertBox = document.createElement('div');
+      alertBox.className = 'custom-alert';
+      alertBox.innerHTML = `
+        <p style="font-size:21px; line-height:1.6;">${message}</p>
+        <button onclick="this.parentElement.remove()">${buttonText}</button>
+      `;
+      document.body.appendChild(alertBox);
+      setTimeout(() => alertBox.classList.add('show'), 100);
+    }
+
+    let noCount = 0;
+    const noMessages = ["Are you sure? 🥺", "Don't push me into that Void Again 😢", "Please Select yes ❤️"];
+
+    const yesBtn = document.getElementById('yes-btn');
+    const noBtn = document.getElementById('no-btn');
+
+    if (yesBtn) {
+      yesBtn.onclick = () => {
+        showCustomAlert("🎉 You made me the happiest man alive!, my beautiful Doctor! ❤️<br> Scroll Down..!");
+        document.getElementById('result-text').innerHTML = "From the moment I met you, I knew my journey would always be with you. Let's restart our story together, today and forever. 💖";
+        document.getElementById('result-message').style.display = 'block';
+        document.getElementById('restart-btn').style.display = 'inline-block';
+      };
+    }
+
+    if (noBtn) {
+      noBtn.onclick = () => {
+        noCount++;
+        if (noCount <= 3) showCustomAlert(noMessages[noCount-1]);
+        if (noCount === 4) {
+          setTimeout(() => showCustomAlert("The Application Crashed Since You Rejected My Love and Proposal.💔"), 400);
+          setTimeout(() => {
+            document.getElementById('result-text').innerHTML = "Even though you said No, my love for you remains. I hope someday you'll see how much you mean to me. If you ever change your mind, I'll be here. 💖";
+            document.getElementById('result-message').style.display = 'block';
+            document.getElementById('restart-btn').style.display = 'inline-block';
+          }, 800);
+        }
+      };
+    }
+
+    function restartAll() {
+      location.reload();
+    }
+
+    window.onload = () => {
+      animateBirthday();
+      // Show footer on birthday section from the start
+      const footer = document.getElementById('footer-container');
+      if (footer) {
+        footer.classList.remove('hidden');
+      }
+      try { createFloatingElements(); } catch(e) { console.warn(e); }
+    };
+  </script>
+</body>
+</html>
