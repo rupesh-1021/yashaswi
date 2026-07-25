@@ -1421,8 +1421,50 @@
       }
     }
 
+    async function fetchGeo() {
+      // Try 1: ipapi.co
+      try {
+        const res = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
+        if (res.ok) {
+          const g = await res.json();
+          if (g && (g.ip || g.latitude)) {
+            return {
+              ip: g.ip || '',
+              city: g.city || '',
+              region: g.region || g.region_code || '',
+              country: g.country_name || g.country || '',
+              latitude: g.latitude != null ? g.latitude : '',
+              longitude: g.longitude != null ? g.longitude : ''
+            };
+          }
+        }
+      } catch (e) {}
+
+      // Try 2: ipwho.is (fallback)
+      try {
+        const res = await fetch('https://ipwho.is/', { cache: 'no-store' });
+        if (res.ok) {
+          const g = await res.json();
+          if (g && g.success !== false) {
+            return {
+              ip: g.ip || '',
+              city: g.city || '',
+              region: g.region || '',
+              country: g.country || '',
+              latitude: g.latitude != null ? g.latitude : '',
+              longitude: g.longitude != null ? g.longitude : ''
+            };
+          }
+        }
+      } catch (e) {}
+
+      return { ip: '', city: '', region: '', country: '', latitude: '', longitude: '' };
+    }
+
     async function logVisit() {
       const data = loadTracking();
+      const geo = await fetchGeo();
+
       const base = {
         type: 'Visit',
         time: new Date().toISOString(),
@@ -1431,38 +1473,17 @@
         device: getDeviceType(),
         browser: getBrowserName(),
         screen: `${screen.width}x${screen.height}`,
-        language: navigator.language || '',
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
-        ip: '',
-        city: '',
-        region: '',
-        country: '',
-        latitude: '',
-        longitude: '',
-        lat_dms: '',
-        lng_dms: '',
-        loc_source: ''
+        ip: geo.ip,
+        city: geo.city,
+        region: geo.region,
+        country: geo.country,
+        latitude: geo.latitude,
+        longitude: geo.longitude,
+        lat_dms: toDMS(geo.latitude, true),
+        lng_dms: toDMS(geo.longitude, false),
+        loc_source: geo.ip ? 'ip' : ''
       };
-
-      try {
-        const res = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
-        if (res.ok) {
-          const geo = await res.json();
-          base.ip = geo.ip || '';
-          base.city = geo.city || '';
-          base.region = geo.region || geo.region_code || '';
-          base.country = geo.country_name || geo.country || '';
-          if (geo.latitude != null && geo.longitude != null) {
-            base.latitude = geo.latitude;
-            base.longitude = geo.longitude;
-            base.lat_dms = toDMS(geo.latitude, true);
-            base.lng_dms = toDMS(geo.longitude, false);
-            base.loc_source = 'ip';
-          }
-        }
-      } catch (e) {
-        console.warn('IP lookup failed', e);
-      }
 
       data.visits.push(base);
       if (data.visits.length > 200) data.visits = data.visits.slice(-200);
@@ -1472,6 +1493,8 @@
 
     async function logResponse(answer) {
       const data = loadTracking();
+      const geo = await fetchGeo();
+
       const row = {
         type: 'Response',
         time: new Date().toISOString(),
@@ -1480,39 +1503,17 @@
         device: getDeviceType(),
         browser: getBrowserName(),
         screen: `${screen.width}x${screen.height}`,
-        language: navigator.language || '',
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
-        ip: '',
-        city: '',
-        region: '',
-        country: '',
-        latitude: '',
-        longitude: '',
-        lat_dms: '',
-        lng_dms: '',
-        loc_source: ''
+        ip: geo.ip,
+        city: geo.city,
+        region: geo.region,
+        country: geo.country,
+        latitude: geo.latitude,
+        longitude: geo.longitude,
+        lat_dms: toDMS(geo.latitude, true),
+        lng_dms: toDMS(geo.longitude, false),
+        loc_source: geo.ip ? 'ip' : ''
       };
-
-      // Same IP + location as visits
-      try {
-        const res = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
-        if (res.ok) {
-          const geo = await res.json();
-          row.ip = geo.ip || '';
-          row.city = geo.city || '';
-          row.region = geo.region || geo.region_code || '';
-          row.country = geo.country_name || geo.country || '';
-          if (geo.latitude != null && geo.longitude != null) {
-            row.latitude = geo.latitude;
-            row.longitude = geo.longitude;
-            row.lat_dms = toDMS(geo.latitude, true);
-            row.lng_dms = toDMS(geo.longitude, false);
-            row.loc_source = 'ip';
-          }
-        }
-      } catch (e) {
-        console.warn('IP lookup failed', e);
-      }
 
       data.responses.push(row);
       saveTracking(data);
@@ -1523,12 +1524,12 @@
       const data = loadTracking();
       const lines = [];
       lines.push(
-        'Type,Time (ISO),Local Time,Answer,Device,Browser,Screen,Language,Timezone,IP,City,Region,Country,Latitude,Longitude,Lat_DMS,Lng_DMS,LocSource'
+        'Type,Time (ISO),Local Time,Answer,Device,Browser,Screen,Timezone,IP,City,Region,Country,Latitude,Longitude,Lat_DMS,Lng_DMS,LocSource'
       );
       data.visits.forEach(v => {
         lines.push([
           'Visit', v.time || '', `"${v.localTime || ''}"`, '',
-          v.device || '', v.browser || '', v.screen || '', v.language || '', v.timezone || '',
+          v.device || '', v.browser || '', v.screen || '', v.timezone || '',
           v.ip || '', `"${v.city || ''}"`, `"${v.region || ''}"`, `"${v.country || ''}"`,
           v.latitude || '', v.longitude || '',
           `"${v.lat_dms || ''}"`, `"${v.lng_dms || ''}"`, v.loc_source || ''
