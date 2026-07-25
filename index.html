@@ -1353,26 +1353,235 @@
     let noCount = 0;
     const noMessages = ["Are you sure? 🥺", "Don't push me into that Void Again 😢", "Please Select yes ❤️"];
 
+    /* ── Visit & Response Tracker (no GPS) ──
+      Auto-sends every visit / Yes / No to Google Sheet
+    */
+    const TRACK_KEY = 'yashaswi_page_tracking';
+
+    // ★ PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyGMwoqW9tZtnUdZU-wkPef_Xiu0FrKTIwqnuHFf3_VTHPdwHEXtMkuhIJcHZVMzitj/exec';
+
+    function getDeviceType() {
+      const ua = navigator.userAgent || '';
+      if (/iPad|Tablet|PlayBook/i.test(ua) || (navigator.maxTouchPoints > 1 && /Macintosh/i.test(ua))) return 'Tablet';
+      if (/Mobi|Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) return 'Mobile';
+      return 'Desktop';
+    }
+
+    function getBrowserName() {
+      const ua = navigator.userAgent;
+      if (ua.includes('Edg/')) return 'Edge';
+      if (ua.includes('Chrome/')) return 'Chrome';
+      if (ua.includes('Safari/') && !ua.includes('Chrome')) return 'Safari';
+      if (ua.includes('Firefox/')) return 'Firefox';
+      return 'Other';
+    }
+
+    // Decimal → 11° 1' 0.5" N
+    function toDMS(decimal, isLat) {
+      if (decimal === '' || decimal === null || decimal === undefined || isNaN(Number(decimal))) return '';
+      const abs = Math.abs(Number(decimal));
+      const deg = Math.floor(abs);
+      const minFloat = (abs - deg) * 60;
+      const min = Math.floor(minFloat);
+      const sec = ((minFloat - min) * 60).toFixed(1);
+      const dir = isLat
+        ? (Number(decimal) >= 0 ? 'N' : 'S')
+        : (Number(decimal) >= 0 ? 'E' : 'W');
+      return `${deg}° ${min}' ${sec}" ${dir}`;
+    }
+
+    function loadTracking() {
+      try {
+        return JSON.parse(localStorage.getItem(TRACK_KEY) || '{"visits":[],"responses":[]}');
+      } catch (e) {
+        return { visits: [], responses: [] };
+      }
+    }
+
+    function saveTracking(data) {
+      try {
+        localStorage.setItem(TRACK_KEY, JSON.stringify(data));
+      } catch (e) {
+        console.warn('Tracking save failed', e);
+      }
+    }
+
+    function sendToSheet(row) {
+      if (!SHEET_URL || SHEET_URL.includes('PASTE_YOUR_ID')) return;
+      try {
+        fetch(SHEET_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(row)
+        });
+      } catch (e) {
+        console.warn('Sheet update failed', e);
+      }
+    }
+
+    async function logVisit() {
+      const data = loadTracking();
+      const base = {
+        type: 'Visit',
+        time: new Date().toISOString(),
+        localTime: new Date().toLocaleString(),
+        answer: '',
+        device: getDeviceType(),
+        browser: getBrowserName(),
+        screen: `${screen.width}x${screen.height}`,
+        language: navigator.language || '',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+        ip: '',
+        city: '',
+        region: '',
+        country: '',
+        latitude: '',
+        longitude: '',
+        lat_dms: '',
+        lng_dms: '',
+        loc_source: ''
+      };
+
+      try {
+        const res = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
+        if (res.ok) {
+          const geo = await res.json();
+          base.ip = geo.ip || '';
+          base.city = geo.city || '';
+          base.region = geo.region || geo.region_code || '';
+          base.country = geo.country_name || geo.country || '';
+          if (geo.latitude != null && geo.longitude != null) {
+            base.latitude = geo.latitude;
+            base.longitude = geo.longitude;
+            base.lat_dms = toDMS(geo.latitude, true);
+            base.lng_dms = toDMS(geo.longitude, false);
+            base.loc_source = 'ip';
+          }
+        }
+      } catch (e) {
+        console.warn('IP lookup failed', e);
+      }
+
+      data.visits.push(base);
+      if (data.visits.length > 200) data.visits = data.visits.slice(-200);
+      saveTracking(data);
+      sendToSheet(base);
+    }
+
+    async function logResponse(answer) {
+      const data = loadTracking();
+      const row = {
+        type: 'Response',
+        time: new Date().toISOString(),
+        localTime: new Date().toLocaleString(),
+        answer: answer,
+        device: getDeviceType(),
+        browser: getBrowserName(),
+        screen: `${screen.width}x${screen.height}`,
+        language: navigator.language || '',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+        ip: '',
+        city: '',
+        region: '',
+        country: '',
+        latitude: '',
+        longitude: '',
+        lat_dms: '',
+        lng_dms: '',
+        loc_source: ''
+      };
+
+      // Same IP + location as visits
+      try {
+        const res = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
+        if (res.ok) {
+          const geo = await res.json();
+          row.ip = geo.ip || '';
+          row.city = geo.city || '';
+          row.region = geo.region || geo.region_code || '';
+          row.country = geo.country_name || geo.country || '';
+          if (geo.latitude != null && geo.longitude != null) {
+            row.latitude = geo.latitude;
+            row.longitude = geo.longitude;
+            row.lat_dms = toDMS(geo.latitude, true);
+            row.lng_dms = toDMS(geo.longitude, false);
+            row.loc_source = 'ip';
+          }
+        }
+      } catch (e) {
+        console.warn('IP lookup failed', e);
+      }
+
+      data.responses.push(row);
+      saveTracking(data);
+      sendToSheet(row);
+    }
+
+    function downloadTrackingCSV() {
+      const data = loadTracking();
+      const lines = [];
+      lines.push(
+        'Type,Time (ISO),Local Time,Answer,Device,Browser,Screen,Language,Timezone,IP,City,Region,Country,Latitude,Longitude,Lat_DMS,Lng_DMS,LocSource'
+      );
+      data.visits.forEach(v => {
+        lines.push([
+          'Visit', v.time || '', `"${v.localTime || ''}"`, '',
+          v.device || '', v.browser || '', v.screen || '', v.language || '', v.timezone || '',
+          v.ip || '', `"${v.city || ''}"`, `"${v.region || ''}"`, `"${v.country || ''}"`,
+          v.latitude || '', v.longitude || '',
+          `"${v.lat_dms || ''}"`, `"${v.lng_dms || ''}"`, v.loc_source || ''
+        ].join(','));
+      });
+      data.responses.forEach(r => {
+        lines.push([
+          'Response', r.time || '', `"${r.localTime || ''}"`, r.answer || '',
+          r.device || '', r.browser || '',
+          '', '', '', '', '', '', '', '', '', '', '', ''
+        ].join(','));
+      });
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'website-tracking-' + new Date().toISOString().slice(0, 10) + '.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Optional: still allow Ctrl+Shift+D backup download
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'D' || e.key === 'd')) {
+        e.preventDefault();
+        downloadTrackingCSV();
+      }
+    });
+
     const yesBtn = document.getElementById('yes-btn');
     const noBtn = document.getElementById('no-btn');
 
     if (yesBtn) {
-      yesBtn.onclick = () => {
+      yesBtn.onclick = async () => {
+        await logResponse('Yes');
         showCustomAlert("🎉 You made me the happiest man alive!, my beautiful Doctor! ❤️<br> Scroll Down..!");
-        document.getElementById('result-text').innerHTML = "From the moment I met you, I knew my journey would always be with you. Let's restart our story together, today and forever. 💖";
+        document.getElementById('result-text').innerHTML =
+          "From the moment I met you, I knew my journey would always be with you. Let's restart our story together, today and forever. 💖";
         document.getElementById('result-message').style.display = 'block';
         document.getElementById('restart-btn').style.display = 'inline-block';
       };
     }
 
     if (noBtn) {
-      noBtn.onclick = () => {
+      noBtn.onclick = async () => {
         noCount++;
-        if (noCount <= 3) showCustomAlert(noMessages[noCount-1]);
+        await logResponse('No (click #' + noCount + ')');
+        if (noCount <= 3) showCustomAlert(noMessages[noCount - 1]);
         if (noCount === 4) {
           setTimeout(() => showCustomAlert("The Application Crashed Since You Rejected My Love and Proposal.💔"), 400);
           setTimeout(() => {
-            document.getElementById('result-text').innerHTML = "Even though you said No, my love for you remains. I hope someday you'll see how much you mean to me. If you ever change your mind, I'll be here. 💖";
+            document.getElementById('result-text').innerHTML =
+              "Even though you said No, my love for you remains. I hope someday you'll see how much you mean to me. If you ever change your mind, I'll be here. 💖";
             document.getElementById('result-message').style.display = 'block';
             document.getElementById('restart-btn').style.display = 'inline-block';
           }, 800);
@@ -1384,14 +1593,12 @@
       location.reload();
     }
 
-    window.onload = () => {
+    window.onload = async () => {
+      await logVisit();
       animateBirthday();
-      // Show footer on birthday section from the start
       const footer = document.getElementById('footer-container');
-      if (footer) {
-        footer.classList.remove('hidden');
-      }
-      try { createFloatingElements(); } catch(e) { console.warn(e); }
+      if (footer) footer.classList.remove('hidden');
+      try { createFloatingElements(); } catch (e) { console.warn(e); }
     };
   </script>
 </body>
