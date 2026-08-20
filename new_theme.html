@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Happy Birthday • Midnight Wishes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Dancing+Script:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950:#05060f;
+    --blush-300:#f5c2dc;
+    --blush-400:#eb9fc4;
+    --gold-300:#f3ddb0;
+    --gold-400:#d9b26a;
+    --cream-100:#fff6ea;
+    --line: rgba(243,221,176,0.35);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;height:100%;background:var(--navy-950);overflow:hidden;}
+  body{font-family:'Poppins',sans-serif;color:var(--cream-100);position:relative;min-height:100%;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  #sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;}
+
+  /* ===== STARTUP GUIDELINES ===== */
+  #guidelines-overlay{
+    position:fixed; inset:0; z-index:100;
+    background:rgba(5,6,15,0.92);
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    transition:opacity .6s ease, visibility .6s ease;
+  }
+  #guidelines-overlay.hide{
+    opacity:0; visibility:hidden; pointer-events:none;
+  }
+  .guidelines-box{
+    position:relative;
+    max-width:480px; width:100%;
+    background:linear-gradient(165deg, rgba(20,25,55,0.95), rgba(10,14,34,0.98));
+    border:1px solid rgba(243,221,176,0.25);
+    border-radius:20px;
+    padding:28px 24px 24px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+  }
+  .guidelines-timer{
+    position:absolute;
+    top:14px; right:16px;
+    font-size:13px;
+    color:var(--gold-300);
+    background:rgba(243,221,176,0.1);
+    border:1px solid rgba(243,221,176,0.25);
+    border-radius:999px;
+    padding:4px 12px;
+    font-weight:500;
+  }
+  .guidelines-title{
+    font-family:'Playfair Display',serif;
+    font-size:20px;
+    color:var(--gold-300);
+    margin:0 0 6px;
+    padding-right:60px;
+  }
+  .guidelines-sub{
+    font-size:12.5px;
+    color:rgba(255,246,234,0.55);
+    margin:0 0 18px;
+    font-weight:300;
+    line-height:1.5;
+  }
+  .guidelines-list{list-style:none; padding:0; margin:0 0 20px;}
+  .guidelines-list li{
+    font-size:13.5px;
+    color:rgba(255,246,234,0.85);
+    margin-bottom:12px;
+    padding-left:22px;
+    position:relative;
+    line-height:1.45;
+    font-weight:300;
+  }
+  .guidelines-list li::before{
+    content:attr(data-num);
+    position:absolute; left:0; top:0;
+    color:var(--gold-300);
+    font-weight:600;
+    font-size:13px;
+  }
+  .guidelines-skip{
+    display:block; width:100%;
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:11px;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--gold-300);
+    background:rgba(243,221,176,0.06);
+    cursor:pointer;
+    font-family:'Poppins',sans-serif;
+  }
+
+  /* ===== FINAL MESSAGE MODAL (NEW) ===== */
+  #final-message{
+    position:fixed; inset:0; z-index:90;
+    background:rgba(5,6,15,0.88);
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    opacity:0; visibility:hidden;
+    transition:opacity .5s ease, visibility .5s ease;
+  }
+  #final-message.show{
+    opacity:1; visibility:visible;
+  }
+  .final-box{
+    position:relative;
+    max-width:420px; width:100%;
+    background:linear-gradient(165deg, rgba(25,30,65,0.97), rgba(10,14,34,0.98));
+    border:1px solid rgba(243,221,176,0.3);
+    border-radius:22px;
+    padding:26px 22px 22px;
+    box-shadow:0 25px 60px rgba(0,0,0,0.55);
+    text-align:center;
+  }
+  .final-close{
+    position:absolute;
+    top:12px; right:14px;
+    background:none; border:none;
+    color:rgba(255,246,234,0.6);
+    font-size:22px;
+    cursor:pointer;
+    line-height:1;
+  }
+  .final-title{
+    font-family:'Playfair Display',serif;
+    font-size:22px;
+    color:var(--gold-300);
+    margin:0 0 8px;
+  }
+  .final-text{
+    font-size:14px;
+    color:rgba(255,246,234,0.8);
+    line-height:1.6;
+    margin:0 0 18px;
+    font-weight:300;
+  }
+  .final-video-wrap{
+    width:100%;
+    border-radius:14px;
+    overflow:hidden;
+    background:#000;
+    margin-bottom:8px;
+  }
+  .final-video-wrap video{
+    width:100%;
+    display:block;
+    max-height:260px;
+    object-fit:cover;
+  }
+
+  .topbar{
+    position:fixed; top:0; left:0; width:100%; z-index:40;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 20px; pointer-events:none;
+  }
+  .brand{
+    display:flex; align-items:center; gap:7px;
+    font-family:'Playfair Display',serif;
+    letter-spacing:0.12em; font-size:12px;
+    color:var(--gold-300); text-transform:uppercase;
+  }
+  .brand svg{width:15px; height:15px;}
+  .tag{font-family:'Dancing Script',cursive; font-size:16px; color:var(--blush-300);}
+
+  .back-btn{
+    position:fixed; top:48px; left:20px; z-index:50;
+    pointer-events:auto; display:none; align-items:center; gap:5px;
+    border:1px solid var(--line); border-radius:999px;
+    padding:6px 14px; font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--gold-300); background:rgba(5,6,15,0.75);
+    backdrop-filter:blur(8px); cursor:pointer;
+    font-family:'Poppins',sans-serif;
+  }
+  .back-btn.visible{display:inline-flex;}
+
+  .progress-dots{position:fixed; bottom:58px; left:50%; transform:translateX(-50%); display:flex; gap:7px; z-index:30;}
+  .progress-dots span{width:6px; height:6px; border-radius:50%; background:rgba(243,221,176,0.25); transition:all .4s;}
+  .progress-dots span.active{background:var(--gold-300); width:18px; border-radius:4px;}
+
+  .footer{
+    position:fixed; bottom:12px; left:50%; transform:translateX(-50%);
+    z-index:25; pointer-events:none;
+    font-family:'Dancing Script',cursive;
+    font-size:15px;
+    color:rgba(243,221,176,0.75);
+    background:rgba(5,6,15,0.65);
+    padding:6px 16px;
+    border-radius:999px;
+    border:1px solid rgba(243,221,176,0.15);
+    backdrop-filter:blur(6px);
+    white-space:nowrap;
+    max-width:90vw;
+  }
+
+  .app{position:relative; width:100%; height:100vh; z-index:1;}
+  .page{
+    position:absolute; inset:0; width:100%; height:100%;
+    display:none; flex-direction:column; align-items:center; justify-content:center;
+    padding:95px 18px 85px;
+    opacity:0; transform:translateY(14px);
+    transition:opacity .5s ease, transform .5s ease;
+    overflow-y:auto;
+  }
+  .page.active{display:flex; opacity:1; transform:translateY(0); pointer-events:auto;}
+  .page:not(.active){pointer-events:none;}
+  .page-inner{max-width:500px; width:100%; text-align:center; margin:0 auto;}
+
+  .moon{
+    position:absolute;
+    top:6%;
+    right:10%;
+    width:82px;
+    height:82px;
+    z-index:5;
+    cursor:pointer;
+  }
+  @media (max-width: 600px){
+    .moon{
+      position: relative;
+      top: auto;
+      right: auto;
+      margin: 8px auto 20px;
+      width: 96px;
+      height: 96px;
+    }
+    #page-hero .page-inner{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #page-hero{padding-top: 70px;}
+  }
+
+  .moon-face{
+    width:100%; height:100%;
+    background:radial-gradient(circle at 35% 35%,#fff9e6,#f5e6c8 40%,#e8d4a0 80%);
+    border-radius:50%;
+    box-shadow:0 0 32px 9px rgba(255,230,180,0.4), inset -8px -6px 14px rgba(200,170,100,0.25);
+    position:relative;
+    animation:moonBob 5.5s ease-in-out infinite;
+    transition:transform .3s ease;
+  }
+  @keyframes moonBob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-5px) rotate(2deg);}}
+  .eye{
+    position:absolute; width:12px; height:12px; background:#3a2a1a; border-radius:50%;
+    top:30px; transform-origin:center; transition:transform .12s ease;
+  }
+  .eye.left{left:20px;}.eye.right{right:20px;}
+  .eye::after{
+    content:''; position:absolute; width:4.5px; height:4.5px; background:#fff; border-radius:50%;
+    top:2px; left:2.8px; animation:eyeLook 6s ease-in-out infinite;
+  }
+  .eye.right::after{animation-delay:-0.15s;}
+  @keyframes eyeLook{0%,15%{transform:translate(0,0);}22%,32%{transform:translate(1.7px,0.4px);}45%,55%{transform:translate(0,0);}62%,72%{transform:translate(-1.5px,0.4px);}85%,100%{transform:translate(0,0);}}
+  .eye.blink{transform:scaleY(0.1);}
+  .blush{
+    position:absolute; width:13px; height:8px; background:rgba(255,130,130,0.55);
+    border-radius:50%; top:45px; filter:blur(1.2px); opacity:0; transition:opacity .2s;
+  }
+  .blush.left{left:11px;}.blush.right{right:11px;}
+  .moon-face.blinking .blush{opacity:1; animation:blushPulse 2.8s ease-in-out;}
+  @keyframes blushPulse{0%{opacity:0;transform:scale(0.6);}15%{opacity:1;transform:scale(1.1);}100%{opacity:0;transform:scale(0.8);}}
+  .smile{
+    position:absolute; width:21px; height:12px; border:2.6px solid #3a2a1a;
+    border-top:none; border-radius:0 0 50% 50%; bottom:17px; left:50%; transform:translateX(-50%);
+  }
+  .moon-spark{
+    position:absolute; width:5.5px; height:5.5px; background:var(--gold-300);
+    clip-path:polygon(50% 0%,63% 37%,100% 50%,63% 63%,50% 100%,37% 63%,0% 50%,37% 37%);
+    top:-7px; left:-11px; animation:twinkleStar 2.2s ease-in-out infinite;
+  }
+  @keyframes twinkleStar{0%,100%{opacity:0.2;transform:scale(0.6);}50%{opacity:1;transform:scale(1.15);}}
+
+  .eyebrow-line{display:flex; align-items:center; justify-content:center; gap:10px; margin:4px 0 12px; color:var(--gold-300); font-size:11px; letter-spacing:0.26em; text-transform:uppercase;}
+  .eyebrow-line .dash{width:28px; height:1px; background:var(--line);}
+  h1.title{font-family:'Playfair Display',serif; font-weight:800; font-size:clamp(36px,8.5vw,64px); line-height:1.05; margin:0 0 8px; background:linear-gradient(180deg,var(--cream-100) 0%,var(--blush-300) 60%,var(--gold-300) 100%); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .to-name{font-family:'Dancing Script',cursive; font-size:clamp(22px,5.5vw,32px); color:var(--blush-300); margin:0 0 12px;}
+  .subtitle{font-size:14px; line-height:1.65; color:rgba(255,246,234,0.72); max-width:400px; margin:0 auto 24px; font-weight:300;}
+
+  .pill-btn{display:inline-flex; align-items:center; gap:7px; border:1px solid var(--line); border-radius:999px; padding:12px 24px; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold-300); background:rgba(243,221,176,0.05); cursor:pointer; transition:background .25s, transform .2s; font-family:'Poppins',sans-serif;}
+  .pill-btn:hover{background:rgba(243,221,176,0.14); transform:translateY(-2px);}
+  .pill-btn.fade-in{opacity:0; animation:fadeInUp .5s ease forwards;}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  .section-label{display:flex; align-items:center; justify-content:center; gap:10px; margin:0 0 6px; color:var(--gold-300); font-size:11.5px; letter-spacing:0.26em; text-transform:uppercase;}
+  .section-label .dash{width:36px; height:1px; background:var(--line);}
+  .section-sub{text-align:center; font-size:13.5px; color:rgba(255,246,234,0.65); margin:0 0 16px; font-weight:300;}
+
+  /* Cake styles remain the same as previous stable version */
+  .cake-stage{position:relative; width:100%; display:flex; flex-direction:column; align-items:center; user-select:none;}
+  .stage-inner{position:relative; width:230px; height:265px; touch-action:pan-y; animation:cakeFloatIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;}
+  @keyframes cakeFloatIn{0%{opacity:0; transform:translateY(20px) scale(0.96);}100%{opacity:1; transform:translateY(0) scale(1);}}
+  .top-heart{position:absolute; left:50%; bottom:238px; transform:translateX(-50%); font-size:18px; color:var(--blush-300); z-index:9; animation:heartFloat 3.8s ease-in-out infinite;}
+  @keyframes heartFloat{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-3px);}}
+  .stage-inner.cut .top-heart{opacity:0; transition:opacity .35s;}
+  .candles-layer{position:absolute; left:0; width:100%; bottom:162px; height:68px; z-index:8; pointer-events:none; transition:opacity .4s ease, transform .4s ease;}
+  .stage-inner.cut .candles-layer{opacity:0; transform:translateY(-4px);}
+  .num-candle{position:absolute; bottom:0; width:34px; text-align:center;}
+  .num-candle.n1{left:76px;}.num-candle.n2{left:120px;}
+  .num-candle svg{width:34px; height:50px; display:block; filter:drop-shadow(0 2px 5px rgba(0,0,0,.4));}
+  .flame{position:absolute; top:-14px; left:50%; transform:translateX(-50%); width:10px; height:15px; background:radial-gradient(circle at 50% 75%,#fff6c9 0%,#ffd15c 34%,#ff8a3d 66%,rgba(255,90,20,0) 78%); border-radius:50% 50% 50% 50%/62% 62% 38% 38%; animation:flicker .38s ease-in-out infinite alternate; transform-origin:bottom center;}
+  .flame::after{content:''; position:absolute; left:50%; bottom:1px; width:3.5px; height:5.5px; transform:translateX(-50%); background:radial-gradient(circle,#2b4bff 0%,#6ea8ff 60%,rgba(110,168,255,0) 80%); border-radius:50%;}
+  @keyframes flicker{0%{transform:translateX(-50%) rotate(-2deg) scaleY(1);}50%{transform:translateX(-50%) rotate(1.8deg) scaleY(1.06);}100%{transform:translateX(-50%) rotate(-1deg) scaleY(0.97);}}
+  .flame.out{animation:none; opacity:0; transform:translateX(-50%) scale(0.1);}
+  .smoke{position:absolute; top:-17px; left:50%; width:4.5px; height:4.5px; border-radius:50%; background:rgba(210,210,220,0.5); opacity:0; pointer-events:none;}
+  .smoke.go{animation:smokeUp 1.1s ease-out forwards;}
+  @keyframes smokeUp{0%{opacity:0.5;transform:translate(-50%,0) scale(1);}100%{opacity:0;transform:translate(-25%,-34px) scale(2.8);}}
+  .cake-stand{position:absolute; left:50%; bottom:0; transform:translateX(-50%); width:190px; height:14px; z-index:1;}
+  .cake-stand::before{content:''; position:absolute; inset:0; border-radius:50%; background:radial-gradient(ellipse at 50% 30%,#5a4a70 0%,#2a1f3a 55%,#120c1c 100%); box-shadow:0 9px 20px rgba(0,0,0,0.55);}
+  .cake-cross{position:absolute; left:50%; bottom:14px; transform:translateX(-50%); width:176px; z-index:2;}
+  .cross-stack{display:flex; flex-direction:column-reverse; align-items:center; gap:2px;}
+  .cross-tier{border-radius:7px; overflow:hidden; background:repeating-linear-gradient(180deg,#f8e0b8 0px,#f8e0b8 7px,#f0a8c8 7px,#f0a8c8 12px,#e0b070 12px,#e0b070 17px); box-shadow:inset 0 0 0 1.5px rgba(0,0,0,0.14);}
+  .cross-tier.t1{width:176px; height:52px;}.cross-tier.t2{width:142px; height:45px;}.cross-tier.t3{width:108px; height:38px;}
+  .cake-body-wrap{position:absolute; left:50%; bottom:14px; transform:translateX(-50%); width:176px; z-index:3;}
+  .cake-remaining,.cake-slice{position:absolute; bottom:0; overflow:hidden;}
+  .cake-remaining{left:0; width:132px; z-index:3;}
+  .cake-slice{left:132px; width:44px; z-index:4;}
+  .slice-face{position:absolute; left:0; top:0; bottom:0; width:10px; z-index:5; opacity:0; transition:opacity .25s ease; background:linear-gradient(180deg, #f8e0b8 0%, #f0a8c8 35%, #e0b070 70%, #d9a060 100%); box-shadow: inset 2px 0 4px rgba(0,0,0,0.2);}
+  .stage-inner.cut .slice-face{opacity:1; transition-delay:.2s;}
+  .cake-remaining .inner,.cake-slice .inner{width:176px; position:relative;}
+  .cake-slice .inner{transform:translateX(-132px);}
+  .tier-stack{display:flex; flex-direction:column-reverse; align-items:center; gap:2px;}
+  .tier{position:relative; border-radius:11px;}
+  .tier1{width:176px; height:52px;}.tier2{width:142px; height:45px;}.tier3{width:108px; height:38px;}
+  .tier-side{position:absolute; inset:0; border-radius:inherit; box-shadow:0 10px 18px rgba(0,0,0,0.45),inset 0 -8px 11px rgba(0,0,0,0.28);}
+  .tier1 .tier-side{background:linear-gradient(105deg,#080d22 0%,#15204a 18%,#2e4080 48%,#15204a 78%,#080d22 100%);}
+  .tier2 .tier-side{background:linear-gradient(105deg,#0a1028 0%,#1a2755 18%,#354890 48%,#1a2755 78%,#0a1028 100%);}
+  .tier3 .tier-side{background:linear-gradient(105deg,#0e1535 0%,#1f2c60 18%,#3e529c 48%,#1f2c60 78%,#0e1535 100%);}
+  .tier-top{position:absolute; top:-7px; left:1.5%; width:97%; height:14px; border-radius:50%; z-index:2;}
+  .tier1 .tier-top{background:radial-gradient(ellipse at 32% 28%,#4a5ba8 0%,#243670 55%,#121a42 100%);}
+  .tier2 .tier-top{background:radial-gradient(ellipse at 32% 28%,#5466b5 0%,#2c3e82 55%,#162250 100%);}
+  .tier3 .tier-top{background:radial-gradient(ellipse at 32% 28%,#6072c2 0%,#35468a 55%,#1a2655 100%);}
+  .tier-trim{position:absolute; left:0; right:0; bottom:5px; height:2.4px; z-index:3; background:linear-gradient(90deg,rgba(217,178,106,0) 0%,var(--gold-400) 12%,var(--gold-300) 50%,var(--gold-400) 88%,rgba(217,178,106,0) 100%);}
+  .tier-trim::before{content:''; position:absolute; left:5%; right:5%; bottom:100%; margin-bottom:2px; height:3px; background-image:radial-gradient(circle,#fff8ea 1.2px,transparent 1.4px); background-size:6.5px 3px; background-repeat:repeat-x;}
+  .dr-banner{position:absolute; top:8px; left:50%; transform:translateX(-50%); z-index:4; font-family:'Dancing Script',cursive; font-size:14.5px; color:var(--gold-300); white-space:nowrap;}
+  .dr-banner::before,.dr-banner::after{content:'✦'; position:absolute; top:50%; font-size:7.5px; opacity:0.7; transform:translateY(-50%);}
+  .dr-banner::before{right:calc(100% + 5px);}.dr-banner::after{left:calc(100% + 5px);}
+  .rosette{position:absolute; bottom:-6px; width:16px; height:16px; z-index:5;}
+  .rosette .petal{position:absolute; width:8.5px; height:11px; border-radius:60% 40% 60% 40%; background:radial-gradient(circle at 35% 30%,#ffd6e6,var(--blush-400) 70%); left:3.5px; top:1.5px; transform-origin:4.25px 9.5px;}
+  .rosette .petal:nth-child(1){transform:rotate(0deg);}.rosette .petal:nth-child(2){transform:rotate(72deg);}.rosette .petal:nth-child(3){transform:rotate(144deg);}.rosette .petal:nth-child(4){transform:rotate(216deg);}.rosette .petal:nth-child(5){transform:rotate(288deg);}
+  .rosette .center{position:absolute; width:4.5px; height:4.5px; border-radius:50%; left:5.5px; top:5.5px; background:#fff0f5;}
+  .rosette.r1{left:5px;}.rosette.r2{right:5px;}
+  .gold-gem{position:absolute; width:3px; height:3px; border-radius:50%; z-index:4; background:radial-gradient(circle at 35% 30%,#fff6d9,var(--gold-300) 55%,var(--gold-400) 100%);}
+  .filigree{position:absolute; inset:0; z-index:2; pointer-events:none; opacity:0.5;}
+  .cake-sparkle{position:absolute; width:3.5px; height:3.5px; background:var(--gold-300); border-radius:50%; z-index:6; opacity:0; animation:cakeSparkle 2.8s ease-in-out infinite;}
+  .cake-sparkle.s1{top:16%; left:16%;}.cake-sparkle.s2{top:32%; right:20%; animation-delay:0.7s;}.cake-sparkle.s3{top:52%; left:26%; animation-delay:1.4s;}.cake-sparkle.s4{top:20%; right:28%; animation-delay:2.1s;}
+  @keyframes cakeSparkle{0%,100%{opacity:0; transform:scale(0.4);}40%,60%{opacity:1; transform:scale(1.3);}}
+  .cut-edge{position:absolute; top:-5px; bottom:0; width:6px; right:-1px; z-index:6; opacity:0; background:linear-gradient(90deg,rgba(255,246,234,0),var(--gold-300));}
+  .knife-flash{position:absolute; top:-5px; bottom:8px; left:132px; width:2px; transform:scaleY(0); background:linear-gradient(180deg,rgba(255,246,234,0),#fff6ea 15%,#fff6ea 85%,rgba(255,246,234,0)); box-shadow:0 0 10px 2.5px rgba(255,246,234,0.7); z-index:10; opacity:0;}
+  .stage-inner.cut .knife-flash{animation:knifeFlash .45s cubic-bezier(0.22, 1, 0.36, 1) forwards;}
+  @keyframes knifeFlash{0%{opacity:0;transform:scaleY(0);}35%{opacity:1;transform:scaleY(1);}100%{opacity:0;transform:scaleY(1);}}
+  .stage-inner.cut .cake-slice{animation:sliceServe 1.3s cubic-bezier(0.4, 0, 0.2, 1) .12s forwards;}
+  @keyframes sliceServe{0%{transform:translate(0,0) rotate(0) scale(1);}25%{transform:translate(10px,-12px) rotate(4deg) scale(1.02);}100%{transform:translate(46px,90px) rotate(16deg) scale(0.88);}}
+  .stage-inner.cut .cut-edge{opacity:1; transition:opacity .3s ease .3s;}
+  .slice-plate{position:absolute; left:50%; bottom:4px; width:54px; height:12px; transform:translateX(18px) scale(0.5); opacity:0; z-index:2; transition:opacity .4s ease .55s, transform .4s ease .55s;}
+  .slice-plate::before{content:''; position:absolute; inset:0; border-radius:50%; background:radial-gradient(ellipse at 50% 30%,rgba(255,246,234,0.4),rgba(255,246,234,0.07) 60%,transparent 75%);}
+  .stage-inner.cut .slice-plate{opacity:1; transform:translateX(18px) scale(1);}
+  .fairy{position:absolute; right:18px; bottom:118px; width:44px; height:58px; z-index:7; pointer-events:none; transition: right 2.2s cubic-bezier(0.4, 0, 0.2, 1), bottom 2.2s cubic-bezier(0.4, 0, 0.2, 1); animation:fairyBob 5.2s ease-in-out infinite;}
+  @keyframes fairyBob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-5px) rotate(2deg);}}
+  .stage-inner.cut .fairy{opacity:0; transition:opacity .35s ease;}
+  .fairy-wing{animation:wingFlutter .48s ease-in-out infinite alternate; transform-origin:center;}
+  .fairy-wing.wing-r{animation-delay:.05s;}
+  @keyframes wingFlutter{0%{transform:scaleX(1);}100%{transform:scaleX(0.72);}}
+  .fairy-star{animation:fairyTwinkle 1.8s ease-in-out infinite; transform-origin:48px 36px;}
+  @keyframes fairyTwinkle{0%,100%{opacity:0.4;transform:scale(0.7);}50%{opacity:1;transform:scale(1.12);}}
+  .fairy-sparkle{position:absolute; width:3px; height:3px; border-radius:50%; background:var(--gold-300); opacity:0;}
+  .fairy-sparkle.s1{top:2px; left:0; animation:sparkleFade 2.8s ease-in-out infinite;}
+  .fairy-sparkle.s2{top:22px; left:38px; animation:sparkleFade 2.8s ease-in-out 1s infinite;}
+  .fairy-sparkle.s3{top:44px; left:2px; animation:sparkleFade 2.8s ease-in-out 1.8s infinite;}
+  @keyframes sparkleFade{0%,100%{opacity:0;transform:scale(0.4);}50%{opacity:1;transform:scale(1.2);}}
+  .swipe-hint{margin-top:8px; font-size:13px; color:rgba(255,246,234,0.6); display:flex; align-items:center; gap:6px;}
+  .swipe-hint svg{width:14px; height:14px; animation:swipeIcon 1.5s ease-in-out infinite;}
+  @keyframes swipeIcon{0%{transform:translateX(0);opacity:.5;}50%{transform:translateX(7px);opacity:1;}100%{transform:translateX(0);opacity:.5;}}
+  .cake-status{margin-top:5px; font-family:'Dancing Script',cursive; font-size:17px; color:var(--blush-300); min-height:20px;}
+  .blow-card{margin:2px auto 0; max-width:360px; text-align:center; border:1px solid var(--line); border-radius:14px; padding:16px 14px; background:linear-gradient(180deg,rgba(29,37,89,0.3),rgba(10,14,34,0.3));}
+  .blow-card p{font-size:13px; color:rgba(255,246,234,0.7); margin:4px 0 10px; font-weight:300; line-height:1.5;}
+  .meter{width:100%; height:6px; border-radius:999px; background:rgba(255,246,234,0.1); overflow:hidden; margin-top:8px;}
+  .meter-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--blush-400),var(--gold-300)); transition:width .08s linear;}
+  .meter-label{font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,246,234,0.45); margin-top:4px;}
+  .reveal .heart{width:24px; height:24px; margin:0 auto 10px; color:var(--blush-300); animation:heartPulse 2.8s ease-in-out infinite;}
+  @keyframes heartPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+  .reveal h2{font-family:'Playfair Display',serif; font-weight:600; font-style:italic; font-size:22px; color:var(--gold-300); margin:0 0 10px;}
+  .reveal p{font-size:14px; line-height:1.75; color:rgba(255,246,234,0.82); font-weight:300;}
+  .reveal .sign{margin-top:14px; font-family:'Dancing Script',cursive; font-size:22px; color:var(--blush-300);}
+  .replay-btn{margin-top:18px;}
+  .confetti{position:fixed; top:-10px; z-index:25; pointer-events:none; border-radius:2px;}
+  .star-particle{position:fixed; z-index:24; pointer-events:none; color:var(--gold-300);}
+</style>
+</head>
+<body>
+
+<canvas id="sky"></canvas>
+
+<!-- STARTUP GUIDELINES -->
+<div id="guidelines-overlay">
+  <div class="guidelines-box">
+    <div class="guidelines-timer" id="guidelinesTimer">7s</div>
+    <h2 class="guidelines-title">Guidelines for Accessing this Website</h2>
+    <p class="guidelines-sub"><b>Screenshot it </b> or else you would lose it later.. I know you would forget these, that is the reason I have created these guidelines at starting of this website..</p>
+    <ul class="guidelines-list">
+      <li data-num="1.">Touch the Moon on the 1st page, it will react for your touch (will Blush like you..)</li>
+      <li data-num="2.">Give access to the microphone so that you can blow the candles through the microphone (MIC)</li>
+      <li data-num="3.">Based on the intensity of how much you are blowing into MIC the candles will go out.</li>
+      <li data-num="4.">Swipe across the Cake, you can cut it actually.</li>
+      <li data-num="5.">Make a Final wish.. and one don’t miss at the end, after navigating to last page (you can see the below 3 ••• dots) wait 10 seconds, you will get a message open it..</li>
+    </ul>
+    <button class="guidelines-skip" id="guidelinesSkip">Got it, let’s begin ✦</button>
+  </div>
+</div>
+
+<!-- FINAL MESSAGE + VIDEO MODAL -->
+<div id="final-message">
+  <div class="final-box">
+    <button class="final-close" id="finalClose">×</button>
+    <h3 class="final-title">A little something for you…</h3>
+    <p class="final-text">I hope this tiny corner of the internet made you smile. Here’s a special moment I wanted to share with you.</p>
+    
+    <div class="final-video-wrap">
+  <video id="finalVideo"
+         src="final_message.mp4"
+         playsinline
+         muted
+         autoplay
+         loop
+         controls
+         preload="auto"
+         style="width:100%; max-height:280px; border-radius:12px; background:#111;">
+    Your browser does not support the video tag.
+  </video>
+</div>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#f3ddb0" stroke-width="1.4"><path d="M12 21s-7.4-4.6-10-9.2C.4 8.1 2.6 4.5 6.3 4.5c2 0 3.6 1.1 4.7 2.7 1.1-1.6 2.7-2.7 4.7-2.7 3.7 0 5.9 3.6 4.3 7.3C19.4 16.4 12 21 12 21z"/></svg>
+    Midnight Wishes
+  </div>
+  <div class="tag">for my favorite person</div>
+</div>
+
+<button class="back-btn" id="backBtn">← Back</button>
+
+<div class="app">
+  <!-- PAGE 1 -->
+  <section class="page active" id="page-hero">
+    <div class="moon" id="moon">
+      <div class="moon-face" id="moonFace">
+        <div class="eye left" id="eyeLeft"></div>
+        <div class="eye right" id="eyeRight"></div>
+        <div class="blush left"></div>
+        <div class="blush right"></div>
+        <div class="smile"></div>
+        <div class="moon-spark"></div>
+      </div>
+    </div>
+    <div class="page-inner">
+      <div class="eyebrow-line"><span class="dash"></span>a night made of wishes and stars<span class="dash"></span></div>
+      <h1 class="title">Happy Birthday</h1>
+      <div class="to-name">to the girl who lights up every night ✨</div>
+      <p class="subtitle">May your day be as magical as the stars above, and your heart as full as tonight’s sky. This little corner of the internet is just for you.</p>
+      <button class="pill-btn" id="toCakeBtn">Begin the Ceremony ✦</button>
+    </div>
+  </section>
+
+  <!-- PAGE 2 -->
+  <section class="page" id="page-cake">
+    <div class="page-inner">
+      <div class="section-label"><span class="dash"></span>make a wish<span class="dash"></span></div>
+      <p class="section-sub" id="cakeSectionSub">Two candles for twenty-two years of you. Blow into your mic to put them out.</p>
+      <div class="cake-stage">
+        <div class="stage-inner" id="stageInner">
+          <div class="top-heart">♥</div>
+          <div class="candles-layer" id="candlesLayer">
+            <div class="num-candle n1">
+              <svg viewBox="0 0 56 80"><defs><linearGradient id="waxG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffe3ef"/><stop offset="100%" stop-color="#eb9fc4"/></linearGradient></defs>
+                <text x="28" y="66" text-anchor="middle" font-family="'Playfair Display',serif" font-weight="800" font-size="76" fill="url(#waxG)" stroke="#c9789f" stroke-width="1.5">2</text>
+              </svg>
+              <div class="flame lit" data-flame="1"></div>
+              <div class="smoke" data-smoke="1"></div>
+            </div>
+            <div class="num-candle n2">
+              <svg viewBox="0 0 56 80">
+                <text x="28" y="66" text-anchor="middle" font-family="'Playfair Display',serif" font-weight="800" font-size="76" fill="url(#waxG)" stroke="#c9789f" stroke-width="1.5">2</text>
+              </svg>
+              <div class="flame lit" data-flame="2"></div>
+              <div class="smoke" data-smoke="2"></div>
+            </div>
+          </div>
+          <div class="fairy" id="fairy">
+            <svg viewBox="0 0 70 90">
+              <defs>
+                <radialGradient id="wingG" cx="40%" cy="35%" r="70%"><stop offset="0%" stop-color="#e7dcff"/><stop offset="100%" stop-color="#a695f7"/></radialGradient>
+                <linearGradient id="dressG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f5c2dc"/><stop offset="100%" stop-color="#d9b26a"/></linearGradient>
+                <radialGradient id="skinG" cx="38%" cy="32%" r="70%"><stop offset="0%" stop-color="#fff3e2"/><stop offset="100%" stop-color="#f3d9b8"/></radialGradient>
+              </defs>
+              <ellipse class="fairy-wing wing-l" cx="19" cy="42" rx="13" ry="22" fill="url(#wingG)" opacity="0.6"/>
+              <ellipse class="fairy-wing wing-r" cx="51" cy="42" rx="13" ry="22" fill="url(#wingG)" opacity="0.6"/>
+              <path d="M35 42 C24 42 21 64 25 78 L45 78 C49 64 46 42 35 42 Z" fill="url(#dressG)"/>
+              <circle cx="35" cy="30" r="11" fill="url(#skinG)"/>
+              <circle cx="35" cy="19" r="5" fill="#d9b26a"/>
+              <circle cx="31" cy="30" r="1.6" fill="#3a2a1a"/>
+              <circle cx="39" cy="30" r="1.6" fill="#3a2a1a"/>
+              <path d="M31 35 Q35 38 39 35" stroke="#3a2a1a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+              <ellipse cx="27" cy="33" rx="2.6" ry="1.6" fill="#f19bb0" opacity="0.7"/>
+              <ellipse cx="43" cy="33" rx="2.6" ry="1.6" fill="#f19bb0" opacity="0.7"/>
+              <line x1="47" y1="60" x2="59" y2="46" stroke="#d9b26a" stroke-width="2" stroke-linecap="round"/>
+              <path class="fairy-star" d="M59 40 L60.6 44.4 L65 46 L60.6 47.6 L59 52 L57.4 47.6 L53 46 L57.4 44.4 Z" fill="#f3ddb0"/>
+            </svg>
+            <div class="fairy-sparkle s1"></div>
+            <div class="fairy-sparkle s2"></div>
+            <div class="fairy-sparkle s3"></div>
+          </div>
+          <div class="cake-stand"></div>
+          <div class="knife-flash"></div>
+          <div class="cake-cross">
+            <div class="cross-stack">
+              <div class="cross-tier t1"></div>
+              <div class="cross-tier t2"></div>
+              <div class="cross-tier t3"></div>
+            </div>
+          </div>
+          <div class="cake-body-wrap">
+            <div class="cake-remaining">
+              <div class="inner">
+                <div class="tier-stack">
+                  <div class="tier tier1">
+                    <div class="tier-top"></div>
+                    <div class="tier-side"></div>
+                    <div class="tier-trim"></div>
+                    <div class="dr-banner">Future Dr.</div>
+                    <div class="gold-gem" style="left:10%;top:20px;"></div>
+                    <div class="gold-gem" style="left:20%;top:12px;"></div>
+                    <div class="gold-gem" style="right:12%;top:18px;"></div>
+                    <div class="gold-gem" style="right:22%;top:11px;"></div>
+                    <div class="filigree"></div>
+                    <div class="cake-sparkle s1"></div>
+                    <div class="cake-sparkle s2"></div>
+                    <div class="cake-sparkle s3"></div>
+                    <div class="cake-sparkle s4"></div>
+                  </div>
+                  <div class="tier tier2">
+                    <div class="tier-top"></div>
+                    <div class="tier-side"></div>
+                    <div class="tier-trim"></div>
+                  </div>
+                  <div class="tier tier3">
+                    <div class="tier-top"></div>
+                    <div class="tier-side"></div>
+                    <div class="tier-trim"></div>
+                    <div class="rosette r1"><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="center"></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="cut-edge"></div>
+            </div>
+            <div class="cake-slice">
+              <div class="slice-face"></div>
+              <div class="inner">
+                <div class="tier-stack">
+                  <div class="tier tier1"><div class="tier-top"></div><div class="tier-side"></div><div class="tier-trim"></div></div>
+                  <div class="tier tier2"><div class="tier-top"></div><div class="tier-side"></div><div class="tier-trim"></div></div>
+                  <div class="tier tier3"><div class="tier-top"></div><div class="tier-side"></div><div class="tier-trim"></div>
+                    <div class="rosette r2"><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="center"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slice-plate"></div>
+        </div>
+        <div class="blow-card" id="blowCard">
+          <p>Turn on your microphone and blow gently towards the screen — the candles will go out with the strength of your breath.</p>
+          <button class="pill-btn" id="micBtn">🎤 Enable Mic & Blow</button>
+          <div class="meter"><div class="meter-fill" id="meterFill"></div></div>
+          <div class="meter-label" id="meterLabel">breath intensity</div>
+        </div>
+        <div class="swipe-hint" id="swipeHint" style="opacity:0;">
+          <span>now swipe across the cake to cut it</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#f3ddb0" stroke-width="1.6"><path d="M2 12h18M14 6l6 6-6 6"/></svg>
+        </div>
+        <div class="cake-status" id="cakeStatus"></div>
+        <button class="pill-btn" id="toRevealBtn" style="margin-top:14px; display:none;">Continue ✦</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAGE 3 -->
+  <section class="page" id="page-reveal">
+    <div class="page-inner reveal">
+      <svg class="heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.4-4.6-10-9.2C.4 8.1 2.6 4.5 6.3 4.5c2 0 3.6 1.1 4.7 2.7 1.1-1.6 2.7-2.7 4.7-2.7 3.7 0 5.9 3.6 4.3 7.3C19.4 16.4 12 21 12 21z"/></svg>
+      <h2>Your wish has been sent to the stars.</h2>
+      <p>Twenty-two candles, twenty-two years, and one very lucky moon watching over all of them. Whatever you wished for tonight — I hope the universe was listening, because you deserve every bit of it. Happy birthday, my love.</p>
+      <div class="sign">forever yours</div>
+      <button class="pill-btn replay-btn" id="replayBtn">Replay ✦</button>
+    </div>
+  </section>
+</div>
+
+<div class="progress-dots" id="progressDots">
+  <span class="active"></span><span></span><span></span>
+</div>
+
+<div class="footer">crafted carefully with love ✦</div>
+
+<script>
+(function(){
+  // Guidelines timer
+  const overlay = document.getElementById('guidelines-overlay');
+  const timerEl = document.getElementById('guidelinesTimer');
+  const skipBtn = document.getElementById('guidelinesSkip');
+  let timeLeft = 7;
+  const timerInterval = setInterval(()=>{
+    timeLeft--;
+    timerEl.textContent = timeLeft + 's';
+    if(timeLeft <= 0){
+      clearInterval(timerInterval);
+      overlay.classList.add('hide');
+    }
+  }, 1000);
+  skipBtn.addEventListener('click', ()=>{
+    clearInterval(timerInterval);
+    overlay.classList.add('hide');
+  });
+
+  // Starfield (same as before)
+  const canvas = document.getElementById('sky');
+  const ctx = canvas.getContext('2d');
+  let W, H, DPR;
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W * DPR; canvas.height = H * DPR;
+    canvas.style.width = W+'px'; canvas.style.height = H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const stars = [];
+  for(let i=0;i<120;i++){
+    stars.push({
+      x: Math.random()*W, y: Math.random()*H,
+      r: Math.random()*1.1 + 0.25,
+      baseA: Math.random()*0.42 + 0.2,
+      phase: Math.random()*Math.PI*2,
+      speed: Math.random()*0.011 + 0.004,
+      sparkleAt: Math.random()*320 + 130,
+      sparkleT: 0
+    });
+  }
+  let rockets = [];
+  function spawnRocket(){
+    const fromLeft = Math.random() > 0.4;
+    rockets.push({
+      x: fromLeft ? -40 - Math.random()*60 : W + 40 + Math.random()*60,
+      y: 40 + Math.random()*H*0.45,
+      vx: fromLeft ? (7.5 + Math.random()*4.5) : -(7.5 + Math.random()*4.5),
+      vy: 1.8 + Math.random()*2.2,
+      len: 110 + Math.random()*80,
+      life: 0, maxLife: 90 + Math.random()*40,
+      brightness: 0.85 + Math.random()*0.15
+    });
+  }
+  let frame = 0;
+  function drawStars(){
+    ctx.clearRect(0,0,W,H);
+    const g = ctx.createRadialGradient(W*0.5, H*0.08, 0, W*0.5, H*0.08, W*0.6);
+    g.addColorStop(0,'rgba(38,30,85,0.18)');
+    g.addColorStop(1,'rgba(5,6,15,0)');
+    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+    for(const s of stars){
+      s.phase += s.speed;
+      let a = s.baseA + Math.sin(s.phase)*0.16;
+      let rad = s.r;
+      s.sparkleT++;
+      if(s.sparkleT > s.sparkleAt){
+        const p = (s.sparkleT - s.sparkleAt)/14;
+        if(p <= 1){
+          a = 1; rad = s.r + Math.sin(p*Math.PI)*1.5;
+        } else { s.sparkleT = 0; s.sparkleAt = Math.random()*400 + 160; }
+      }
+      ctx.globalAlpha = Math.max(0, Math.min(1,a));
+      ctx.fillStyle = '#fff6ea';
+      ctx.beginPath(); ctx.arc(s.x, s.y, rad, 0, Math.PI*2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if(frame % 120 === 0 && rockets.length < 2) spawnRocket();
+    rockets.forEach(r=>{
+      r.x += r.vx; r.y += r.vy; r.life++;
+      const progress = r.life / r.maxLife;
+      const alpha = r.brightness * Math.max(0, 1 - progress*0.65);
+      const tailX = r.x - r.vx * (r.len / 9);
+      const tailY = r.y - r.vy * (r.len / 9);
+      const grad = ctx.createLinearGradient(r.x, r.y, tailX, tailY);
+      grad.addColorStop(0, `rgba(255,255,255,${alpha})`);
+      grad.addColorStop(1, 'rgba(255,246,234,0)');
+      ctx.strokeStyle = grad; ctx.lineWidth = 2.1; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(r.x, r.y); ctx.lineTo(tailX, tailY); ctx.stroke();
+    });
+    rockets = rockets.filter(r => r.life < r.maxLife && r.x > -140 && r.x < W+140);
+    frame++;
+    requestAnimationFrame(drawStars);
+  }
+  drawStars();
+
+  // Moon interaction
+  const eyeLeft = document.getElementById('eyeLeft');
+  const eyeRight = document.getElementById('eyeRight');
+  const moonFaceEl = document.getElementById('moonFace');
+  const moonEl = document.getElementById('moon');
+  function runBlinkCycle(){
+    eyeLeft.classList.add('blink'); eyeRight.classList.add('blink');
+    setTimeout(()=>{
+      eyeLeft.classList.remove('blink'); eyeRight.classList.remove('blink');
+      moonFaceEl.classList.remove('blinking');
+      void moonFaceEl.offsetWidth;
+      moonFaceEl.classList.add('blinking');
+      setTimeout(()=> moonFaceEl.classList.remove('blinking'), 2800);
+    }, 180);
+  }
+  setInterval(runBlinkCycle, 6500);
+  moonEl.addEventListener('click', ()=>{
+    moonFaceEl.style.transition = 'transform 0.08s ease';
+    moonFaceEl.style.transform = 'translateX(-5px) rotate(-5deg) scale(1.04)';
+    setTimeout(()=> moonFaceEl.style.transform = 'translateX(4px) rotate(4deg) scale(1.04)', 80);
+    setTimeout(()=> moonFaceEl.style.transform = 'translateX(-2px) rotate(-2deg) scale(1.02)', 160);
+    setTimeout(()=> moonFaceEl.style.transform = '', 240);
+    eyeLeft.classList.add('blink'); eyeRight.classList.add('blink');
+    moonFaceEl.classList.remove('blinking');
+    void moonFaceEl.offsetWidth;
+    moonFaceEl.classList.add('blinking');
+    setTimeout(()=>{ eyeLeft.classList.remove('blink'); eyeRight.classList.remove('blink'); }, 900);
+  });
+
+  // Fairy
+  const fairySpots = [
+    {right:'18px', bottom:'118px'},
+    {right:'160px', bottom:'200px'},
+    {right:'-10px', bottom:'60px'},
+    {right:'165px', bottom:'45px'},
+    {right:'5px', bottom:'205px'}
+  ];
+  let fairyLast = 0;
+  function flyFairyToRandomSpot(){
+    const fairyEl = document.getElementById('fairy');
+    if(!fairyEl) return;
+    let next;
+    do { next = Math.floor(Math.random()*fairySpots.length); } while(next === fairyLast);
+    fairyLast = next;
+    const spot = fairySpots[next];
+    fairyEl.style.right = spot.right;
+    fairyEl.style.bottom = spot.bottom;
+  }
+  let fairyFlightTimer = setInterval(flyFairyToRandomSpot, 5300);
+  setTimeout(flyFairyToRandomSpot, 2300);
+
+  // Pages + Final Message Timer
+  const pageOrder = ['page-hero','page-cake','page-reveal'];
+  const dots = document.querySelectorAll('#progressDots span');
+  const backBtn = document.getElementById('backBtn');
+  const finalMessage = document.getElementById('final-message');
+  const finalVideo = document.getElementById('finalVideo');
+  const finalClose = document.getElementById('finalClose');
+  let currentIndex = 0;
+  let finalTimer = null;
+
+  function goTo(index){
+    if(index === currentIndex || index < 0 || index > 2) return;
+    const oldEl = document.getElementById(pageOrder[currentIndex]);
+    const newEl = document.getElementById(pageOrder[index]);
+    oldEl.classList.remove('active');
+    newEl.style.display = 'flex';
+    requestAnimationFrame(()=> requestAnimationFrame(()=> newEl.classList.add('active')));
+    setTimeout(()=>{ if(!oldEl.classList.contains('active')) oldEl.style.display = 'none'; }, 520);
+    dots.forEach((d,i)=> d.classList.toggle('active', i===index));
+    currentIndex = index;
+    backBtn.classList.toggle('visible', index > 0);
+
+    // Start 10-second timer when last page is reached
+    if(index === 2){
+      clearTimeout(finalTimer);
+      finalTimer = setTimeout(()=>{
+        finalMessage.classList.add('show');
+        // Try to play the video
+        finalVideo.currentTime = 0;
+        finalVideo.play().catch(()=>{}); // muted autoplay usually works
+      }, 10000); // 10 seconds
+    } else {
+      clearTimeout(finalTimer);
+      finalMessage.classList.remove('show');
+      finalVideo.pause();
+    }
+  }
+
+  finalClose.addEventListener('click', ()=>{
+    finalMessage.classList.remove('show');
+    finalVideo.pause();
+  });
+
+  backBtn.addEventListener('click', ()=> goTo(currentIndex - 1));
+  document.getElementById('toCakeBtn').addEventListener('click', ()=> goTo(1));
+  document.getElementById('toRevealBtn').addEventListener('click', ()=>{ goTo(2); burstConfetti(true); });
+  document.getElementById('replayBtn').addEventListener('click', ()=>{ resetAll(); goTo(0); });
+
+  // Cut logic (same as before)
+  const stage = document.getElementById('stageInner');
+  const cakeStatus = document.getElementById('cakeStatus');
+  const swipeHint = document.getElementById('swipeHint');
+  const toRevealBtn = document.getElementById('toRevealBtn');
+  const blowCard = document.getElementById('blowCard');
+  const cakeSectionSub = document.getElementById('cakeSectionSub');
+  let startX=0, startY=0, tracking=false, cutDone=false, cuttingEnabled=false;
+
+  function pointerDown(e){
+    if(cutDone || !cuttingEnabled) return;
+    tracking = true;
+    const p = e.touches ? e.touches[0] : e;
+    startX = p.clientX; startY = p.clientY;
+  }
+  function pointerMove(e){
+    if(!tracking || cutDone || !cuttingEnabled) return;
+    const p = e.touches ? e.touches[0] : e;
+    const dx = p.clientX - startX, dy = p.clientY - startY;
+    if(Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)*1.1) doCut();
+  }
+  function pointerUp(){ tracking = false; }
+
+  function enableCutting(){
+    cuttingEnabled = true;
+    cakeSectionSub.textContent = 'The candles are out — now swipe across the cake to cut it.';
+    blowCard.style.transition = 'opacity .4s ease, transform .4s ease';
+    blowCard.style.opacity = '0';
+    blowCard.style.transform = 'translateY(-5px)';
+    setTimeout(()=> blowCard.style.display = 'none', 400);
+    swipeHint.style.transition = 'opacity .4s ease .2s';
+    swipeHint.style.opacity = '1';
+  }
+
+  function doCut(){
+    if(cutDone) return;
+    cutDone = true;
+    stage.classList.add('cut');
+    cakeStatus.textContent = 'sliced with love 🍰';
+    swipeHint.style.opacity = '0';
+    toRevealBtn.style.display = 'inline-flex';
+    toRevealBtn.classList.add('fade-in');
+    clearInterval(fairyFlightTimer);
+    burstConfetti(false);
+  }
+
+  stage.addEventListener('mousedown', pointerDown);
+  stage.addEventListener('mousemove', pointerMove);
+  window.addEventListener('mouseup', pointerUp);
+  stage.addEventListener('touchstart', pointerDown, {passive:true});
+  stage.addEventListener('touchmove', pointerMove, {passive:true});
+  stage.addEventListener('touchend', pointerUp);
+
+  // Candles + Mic (same as before)
+  const flames = Array.from(document.querySelectorAll('.flame'));
+  const smokes = Array.from(document.querySelectorAll('.smoke'));
+  const micBtn = document.getElementById('micBtn');
+  const meterFill = document.getElementById('meterFill');
+  const meterLabel = document.getElementById('meterLabel');
+  let litCount = flames.length;
+  let allOutDone = false;
+
+  function extinguishOne(){
+    const remaining = flames.filter(f => !f.classList.contains('out'));
+    if(remaining.length === 0) return;
+    const f = remaining[Math.floor(Math.random()*remaining.length)];
+    f.classList.add('out');
+    const key = f.getAttribute('data-flame');
+    const sm = smokes.find(s => s.getAttribute('data-smoke') === key);
+    if(sm){ sm.classList.add('go'); setTimeout(()=> sm.classList.remove('go'), 1100); }
+    litCount--;
+    if(litCount <= 0 && !allOutDone){
+      allOutDone = true;
+      meterLabel.textContent = 'all the candles are out ✨';
+      setTimeout(enableCutting, 600);
+    }
+  }
+
+  function burstConfetti(big=false){
+    const colors = ['#eb9fc4','#f3ddb0','#a695f7','#fff6ea','#f5c2dc','#d9b26a'];
+    const count = big ? 48 : 34;
+    for(let i=0;i<count;i++){
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      const size = 4 + Math.random()*6.5;
+      c.style.width = size+'px'; c.style.height = (size*0.4)+'px';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.left = Math.random()*100+'vw';
+      document.body.appendChild(c);
+      const duration = 1700 + Math.random()*1700;
+      const rot = (Math.random()*550-275)+'deg';
+      c.animate([
+        {transform:'translateY(0) rotate(0deg)', opacity:1},
+        {transform:`translateY(${window.innerHeight+45}px) rotate(${rot})`, opacity:0.7}
+      ],{duration, easing:'cubic-bezier(.2,.55,.35,1)'});
+      setTimeout(()=> c.remove(), duration+30);
+    }
+  }
+
+  let holdInterval = null;
+  function startHoldBlow(){
+    if(holdInterval) return;
+    let power = 0;
+    holdInterval = setInterval(()=>{
+      power = Math.min(100, power+12);
+      meterFill.style.width = power+'%';
+      if(power >= 55){ extinguishOne(); power = 0; }
+    }, 120);
+  }
+  function stopHoldBlow(){ clearInterval(holdInterval); holdInterval = null; meterFill.style.width = '0%'; }
+
+  let audioCtx, analyser, dataArray, micStream, micActive=false, blowAccum=0;
+  async function enableMic(){
+    try{
+      micStream = await navigator.mediaDevices.getUserMedia({audio:true});
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const source = audioCtx.createMediaStreamSource(micStream);
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 512;
+      dataArray = new Uint8Array(analyser.fftSize);
+      source.connect(analyser);
+      micActive = true;
+      micBtn.textContent = '🎤 Listening… blow now';
+      loopMic();
+    } catch(err){
+      micBtn.textContent = '🎤 Mic unavailable — tap & hold to blow';
+      meterLabel.textContent = 'hold the button to blow out candles';
+      micBtn.addEventListener('mousedown', startHoldBlow);
+      micBtn.addEventListener('mouseup', stopHoldBlow);
+      micBtn.addEventListener('mouseleave', stopHoldBlow);
+      micBtn.addEventListener('touchstart', e=>{e.preventDefault(); startHoldBlow();},{passive:false});
+      micBtn.addEventListener('touchend', stopHoldBlow);
+    }
+  }
+  function loopMic(){
+    if(!micActive) return;
+    analyser.getByteTimeDomainData(dataArray);
+    let sum = 0;
+    for(let i=0;i<dataArray.length;i++){ const v=(dataArray[i]-128)/128; sum += v*v; }
+    const rms = Math.sqrt(sum/dataArray.length);
+    const intensity = Math.min(100, Math.round(rms*240));
+    meterFill.style.width = intensity+'%';
+    if(intensity > 18) blowAccum += intensity; else blowAccum = Math.max(0, blowAccum-5);
+    if(blowAccum > 110){ extinguishOne(); blowAccum = 0; }
+    requestAnimationFrame(loopMic);
+  }
+  micBtn.addEventListener('click', ()=>{ if(!micActive) enableMic(); });
+
+  function resetAll(){
+    flames.forEach(f=>f.classList.remove('out'));
+    litCount = flames.length; allOutDone = false;
+    stage.classList.remove('cut'); cutDone = false; cuttingEnabled = false;
+    cakeStatus.textContent = '';
+    cakeSectionSub.textContent = 'Two candles for twenty-two years of you. Blow into your mic to put them out.';
+    swipeHint.style.opacity = '0';
+    toRevealBtn.style.display = 'none';
+    blowCard.style.display = '';
+    blowCard.style.opacity = '1';
+    blowCard.style.transform = 'none';
+    meterFill.style.width = '0%';
+    meterLabel.textContent = 'breath intensity';
+    clearInterval(fairyFlightTimer);
+    fairyFlightTimer = setInterval(flyFairyToRandomSpot, 5300);
+    clearTimeout(finalTimer);
+    finalMessage.classList.remove('show');
+    finalVideo.pause();
+  }
+})();
+</script>
+</body>
+</html>
