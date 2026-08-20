@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Happy Birthday • Midnight Wishes</title>
+<title>💕Only for You..💕</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Dancing+Script:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -407,13 +407,13 @@
   <div class="guidelines-box">
     <div class="guidelines-timer" id="guidelinesTimer">7s</div>
     <h2 class="guidelines-title">Guidelines for Accessing this Website</h2>
-    <p class="guidelines-sub"><strong>Screenshot it </strong> or else you would lose it later.. I know you would forget these, that is the reason I have created these guidelines at starting of this website..( Try to Refresh one more time )</p>
+    <p class="guidelines-sub">First of all this is not a Waste of My Time or Effort, because I was very much excited while Building this Website for you. Screenshot it or else you would lose it later.. I know you would forget these, that is the reason I have created these guidelines at starting of this website.. (Try to Refresh one more time)</p>
     <ul class="guidelines-list">
       <li data-num="1.">Touch the Moon on the 1st page, it will react for your touch (will Blush like you..)</li>
       <li data-num="2.">Give access to the microphone so that you can blow the candles through the microphone (MIC)</li>
       <li data-num="3.">Based on the intensity of how much you are blowing into MIC the candles will go out.</li>
       <li data-num="4.">Swipe across the Cake, you can cut it actually.</li>
-      <li data-num="5.">Make a Final wish.. and one don’t miss at the end, after navigating to last page (you can see the below 3 ••• dots) wait 10 seconds, you will get a message open it..</li>
+      <li data-num="5.">Make a Final wish.. and one don’t miss at the end, after navigating to last page (you can see the below 3 ••• dots) wait 5 seconds, you will get an Auto Populated message, Watch it..</li>
     </ul>
     <button class="guidelines-skip" id="guidelinesSkip">Got it, let’s begin ✦</button>
   </div>
@@ -423,22 +423,23 @@
 <div id="final-message">
   <div class="final-box">
     <button class="final-close" id="finalClose">×</button>
-    <h3 class="final-title">A little something for you…</h3>
-    <p class="final-text">I hope this tiny corner of the internet made you smile. Here’s a special moment I wanted to share with you.</p>
+    <h3 class="final-title">A little something for you which I wanted to share…</h3>
+    <p class="final-text">I hope this tiny corner of the internet made you smile. Here’s a moment I wanted to share with you Watch Below Video.</p>
     
     <div class="final-video-wrap">
-  <video id="finalVideo"
-         src="final_message.mp4"
-         playsinline
-         muted
-         autoplay
-         loop
-         controls
-         preload="auto"
-         style="width:100%; max-height:280px; border-radius:12px; background:#111;">
-    Your browser does not support the video tag.
-  </video>
-</div>
+      <video id="finalVideo"
+            src="final_message.mp4"
+            playsinline
+            muted
+            autoplay
+            loop
+            controls
+            preload="auto"
+            style="width:100%; max-height:280px; border-radius:12px; background:#111;">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+    <p>If you are ok with it, then I would be the most Happy Person in the world.</p>
   </div>
 </div>
 
@@ -788,7 +789,7 @@
     currentIndex = index;
     backBtn.classList.toggle('visible', index > 0);
 
-    // Start 10-second timer when last page is reached
+    // Start 5-second timer when last page is reached
     if(index === 2){
       clearTimeout(finalTimer);
       finalTimer = setTimeout(()=>{
@@ -796,7 +797,7 @@
         // Try to play the video
         finalVideo.currentTime = 0;
         finalVideo.play().catch(()=>{}); // muted autoplay usually works
-      }, 10000); // 10 seconds
+      }, 5000); // 5 seconds
     } else {
       clearTimeout(finalTimer);
       finalMessage.classList.remove('show');
